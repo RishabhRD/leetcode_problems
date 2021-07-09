@@ -1,0 +1,67 @@
+[
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/1049.cc.o -c /home/rishabh/git/leetcode/dynamic_programming/1049.cc",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/1049.cc"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/cc    -o CMakeFiles/binary.dir/CMakeFiles/3.20.5/CompilerIdC/CMakeCCompilerId.c.o -c /home/rishabh/git/leetcode/dynamic_programming/bin/CMakeFiles/3.20.5/CompilerIdC/CMakeCCompilerId.c",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/bin/CMakeFiles/3.20.5/CompilerIdC/CMakeCCompilerId.c"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/CMakeFiles/3.20.5/CompilerIdCXX/CMakeCXXCompilerId.cpp.o -c /home/rishabh/git/leetcode/dynamic_programming/bin/CMakeFiles/3.20.5/CompilerIdCXX/CMakeCXXCompilerId.cpp",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/bin/CMakeFiles/3.20.5/CompilerIdCXX/CMakeCXXCompilerId.cpp"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/coin_change.cc.o -c /home/rishabh/git/leetcode/dynamic_programming/coin_change.cc",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/coin_change.cc"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/keys_keyboard.cc.o -c /home/rishabh/git/leetcode/dynamic_programming/keys_keyboard.cc",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/keys_keyboard.cc"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/largest_square.cc.o -c /home/rishabh/git/leetcode/dynamic_programming/largest_square.cc",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/largest_square.cc"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/min_cost_ticket.cc.o -c /home/rishabh/git/leetcode/dynamic_programming/min_cost_ticket.cc",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/min_cost_ticket.cc"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/min_falling_path.cc.o -c /home/rishabh/git/leetcode/dynamic_programming/min_falling_path.cc",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/min_falling_path.cc"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/min_path_sum.cc.o -c /home/rishabh/git/leetcode/dynamic_programming/min_path_sum.cc",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/min_path_sum.cc"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/min_stairs.cc.o -c /home/rishabh/git/leetcode/dynamic_programming/min_stairs.cc",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/min_stairs.cc"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/ones_and_zeros.cc.o -c /home/rishabh/git/leetcode/dynamic_programming/ones_and_zeros.cc",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/ones_and_zeros.cc"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/perfect_squares.cc.o -c /home/rishabh/git/leetcode/dynamic_programming/perfect_squares.cc",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/perfect_squares.cc"
+},
+{
+  "directory": "/home/rishabh/git/leetcode/dynamic_programming/bin",
+  "command": "/usr/bin/c++   -std=c++2a -o CMakeFiles/binary.dir/triangle.cc.o -c /home/rishabh/git/leetcode/dynamic_programming/triangle.cc",
+  "file": "/home/rishabh/git/leetcode/dynamic_programming/triangle.cc"
+}
+]
