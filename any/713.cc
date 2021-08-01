@@ -75,17 +75,17 @@ constexpr std::size_t array_size(const T (&)[N]) noexcept {
   return N;
 }
 
-int numSubarrayProductLessThanK(vector<int> &nums, int k) noexcept {
+int numSubarrayProductLessThanK(const vector<int> &nums, const int k) noexcept {
   if(k == 0) return 0;
   int prod = 1;
   int cnt = 0;
-  for(size_t i = 0, j = 0; j < nums.size(); j++){
-    prod *= nums[j];
-    while(i <= j and prod >= k){
-      prod /= nums[i];
-      i++;
+  for(size_t i = 0u, j = 0u; i < size(nums); i++){
+    prod *= nums[i];
+    while(prod >= k and j <= i){
+      prod /= nums[j];
+      j++;
     }
-    cnt += j - i + 1;
+    cnt += i - j + 1;
   }
   return cnt;
 }
