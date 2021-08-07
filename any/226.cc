@@ -1,6 +1,6 @@
+#include <stack>
 #include <algorithm>
 #include <array>
-#include <cmath>
 #include <iostream>
 #include <iterator>
 #include <limits>
@@ -76,47 +76,36 @@ constexpr std::size_t array_size(const T (&)[N]) noexcept {
   return N;
 }
 
-int binary_search(const vector<int> &nums, int target) {
-  int low = 0;
-  int high = size(nums) - 1;
-  while (low <= high) {
-    int mid = (low + high) / 2;
-    if (nums[mid] == target)
-      return mid;
-    else if (nums[mid] < target)
-      low = mid + 1;
-    else
-      high = mid - 1;
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
+
+TreeNode *invertTree(TreeNode *root) {
+  if(root == nullptr) return root;
+  swap(root->left, root->right);
+  invertTree(root->left);
+  invertTree(root->right);
+  return root;
+}
+
+TreeNode *invertTree_iterative(TreeNode *root) {
+  if(root == nullptr) return root;
+  stack<TreeNode*> st;
+  st.push(root);
+  while(not empty(st)){
+    auto top = st.top();
+    st.pop();
+    swap(top->left, top->right);
+    if(top->left)
+      st.push(top->left);
+    if(top->right)
+      st.push(top->right);
   }
-  return -1;
-}
-
-auto first_index_of(int low, int high, int target, const vector<int>& nums){
-  while(low < high){
-    int mid = (low + high) / 2;
-    if(nums[mid] != target) low = mid + 1;
-    else high = mid;
-  }
-  return low;
-}
-
-auto last_index_of(int low, int high, int target, const vector<int>& nums){
-  while(low < high){
-    int mid = ceil((low + high) / 2.0);
-    if(nums[mid] != target) high = mid - 1;
-    else low = mid;
-  }
-  return high;
-}
-
-vector<int> searchRange(const vector<int> &nums, int target) {
-  auto index = binary_search(nums, target);
-  if (index == -1)
-    return {-1, -1};
-  return {first_index_of(0, index, target, nums),
-          last_index_of(index, size(nums) - 1, target, nums)};
-}
-
-int main(){
-  cout << searchRange({5,7,7,8,8,10}, 8) << endl;
+  return root;
 }
