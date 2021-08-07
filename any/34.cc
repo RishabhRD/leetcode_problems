@@ -76,47 +76,37 @@ constexpr std::size_t array_size(const T (&)[N]) noexcept {
   return N;
 }
 
-int binary_search(const vector<int> &nums, int target) {
+auto get_left_index(const vector<int> &nums, int target) {
+  if(size(nums) == 0) return -1;
   int low = 0;
   int high = size(nums) - 1;
-  while (low <= high) {
-    int mid = (low + high) / 2;
-    if (nums[mid] == target)
-      return mid;
-    else if (nums[mid] < target)
+  while (low < high) {
+    auto mid = (low + high) / 2;
+    if (nums[mid] < target) {
       low = mid + 1;
-    else
-      high = mid - 1;
+    } else {
+      high = mid;
+    }
   }
-  return -1;
+  return nums[low] == target ? low : -1;
 }
 
-auto first_index_of(int low, int high, int target, const vector<int>& nums){
-  while(low < high){
-    int mid = (low + high) / 2;
-    if(nums[mid] != target) low = mid + 1;
-    else high = mid;
-  }
-  return low;
-}
-
-auto last_index_of(int low, int high, int target, const vector<int>& nums){
-  while(low < high){
+auto last_index_of(int low, int high, int target, const vector<int> &nums) {
+  while (low < high) {
     int mid = ceil((low + high) / 2.0);
-    if(nums[mid] != target) high = mid - 1;
-    else low = mid;
+    if (nums[mid] != target)
+      high = mid - 1;
+    else
+      low = mid;
   }
   return high;
 }
 
 vector<int> searchRange(const vector<int> &nums, int target) {
-  auto index = binary_search(nums, target);
-  if (index == -1)
+  auto left_index = get_left_index(nums, target);
+  if (left_index == -1)
     return {-1, -1};
-  return {first_index_of(0, index, target, nums),
-          last_index_of(index, size(nums) - 1, target, nums)};
+  return {left_index, last_index_of(left_index, size(nums) - 1, target, nums)};
 }
 
-int main(){
-  cout << searchRange({5,7,7,8,8,10}, 8) << endl;
-}
+int main() { cout << searchRange({}, 8) << endl; }
