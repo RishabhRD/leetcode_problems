@@ -2,3 +2,4 @@
 bin/*
 */.cache/*
 */.ccls-cache/*
+.ccls-cache/*
