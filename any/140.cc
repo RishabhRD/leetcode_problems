@@ -1,4 +1,4 @@
-#include <unordered_map>
+#include <unordered_set>
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -11,30 +11,39 @@
 
 using namespace std;
 
-vector<string> dfs(string s, const vector<string>& wordDict, unordered_map<string, vector<string>>& mp){
-  if(mp.find(s) != mp.end()){
-    return mp[s];
+bool contains(const unordered_set<string_view> &st, string_view str) {
+  return st.find(str) != end(st);
+}
+
+void word_break(string_view str,
+  const unordered_set<string_view> &st,
+  size_t cur_idx,
+  vector<string_view> &cur_path,
+  vector<string> &res) {
+  if (cur_idx == size(str)) {
+    res.push_back(accumulate(next(cbegin(cur_path)),
+      cend(cur_path),
+      std::string(cur_path.front()),
+      [](const string &s1, string_view s2) {
+        return s1 + " " + std::string(s2);
+      }));
   }
-  vector<string> res;
-  if(size(s) == 0){
-    res.push_back("");
-    return res;
-  }
-  for(const auto& word : wordDict){
-    if(s.find(word) == 0){
-      for(auto str : dfs(s.substr(size(word)), wordDict, mp)){
-        res.push_back(word + (empty(str) ? "" : " ") + str);
-      }
+  for (size_t i = cur_idx; i < size(str); i++) {
+    if (contains(st, str.substr(cur_idx, i - cur_idx + 1))) {
+      cur_path.push_back(str.substr(cur_idx, i - cur_idx + 1));
+      word_break(str, st, i + 1, cur_path, res);
+      cur_path.pop_back();
     }
   }
-  mp[s] = res;
-  return res;
 }
 
 class Solution {
 public:
   vector<string> wordBreak(string s, vector<string> &wordDict) {
-    unordered_map<string, vector<string>> mp;
-    return dfs(s, wordDict, mp);
+    unordered_set<string_view> st{ cbegin(wordDict), cend(wordDict) };
+    vector<string_view> cur_path;
+    vector<string> res;
+    word_break(s, st, 0, cur_path, res);
+    return res;
   }
 };
