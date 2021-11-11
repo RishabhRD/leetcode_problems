@@ -12,16 +12,17 @@ using namespace std;
 
 class Solution {
 public:
-  int coinChange(vector<int> &coins, int amount) {
+  int change(int amount, vector<int> &coins) {
     const int n = size(coins);
-    vector dp(amount + 1, amount + 1);
-    dp[0] = 0;
+    vector dp(amount + 1, 0);
+    dp[0] = 1;
     for(int coin : coins){
       for(int j = 1; j <= amount; j++){
-        if(j - coin >= 0)
-          dp[j] = min(dp[j], 1 + dp[j - coin]);
+        if(j - coin >= 0){
+          dp[j] += dp[j - coin];
+        }
       }
     }
-    return dp[amount] == amount + 1 ? -1 : dp[amount];
+    return dp[amount];
   }
 };

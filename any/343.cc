@@ -12,13 +12,11 @@ using namespace std;
 
 class Solution {
 public:
-  int numSquares(int n) {
-    vector dp(n + 1, n + 1);
-    dp[0] = 0;
-    const int k = sqrt(n);
-    for (int i = 1; i <= k; i++) {
-      for (int j = 1; j <= n; j++) {
-        if (j - i * i >= 0) dp[j] = min(dp[j], 1 + dp[j - i * i]);
+  int integerBreak(int n) {
+    vector dp(n + 1, 0);
+    for (int i = 2; i <= n; i++) {
+      for (int j = 1; j < i; j++) {
+        dp[i] = max(dp[i], max(j, dp[j]) * max(i - j, dp[i - j]));
       }
     }
     return dp[n];
