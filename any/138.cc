@@ -18,41 +18,41 @@ public:
 
   Node(int _val) {
     val = _val;
-    next = nullptr;
-    random = nullptr;
+    next = NULL;
+    random = NULL;
   }
 };
 
 class Solution {
 public:
   Node *copyRandomList(Node *head) {
-    if(head == nullptr) return nullptr;
-    auto cur_node = head;
-    while(cur_node){
-      Node* new_node = new Node(cur_node->val);
-      new_node->random = cur_node->random;
-      cur_node = exchange(cur_node->next, new_node);
-      new_node->next = cur_node;
+    auto cur = head;
+    while(cur){
+      Node* new_node = new Node(cur->val);
+      Node* next_node = cur->next;
+      new_node->next = next_node;
+      new_node->random = cur->random;
+      cur->next = new_node;
+      cur = next_node;
     }
-    cur_node = head->next;
-    while(cur_node){
-      if(cur_node->random){
-        cur_node->random = cur_node->random->next;
-      }
-      if(cur_node->next)
-        cur_node = cur_node->next->next;
-      else
-        cur_node = nullptr;
+    cur = head;
+    while(cur){
+      auto new_node = cur->next;
+      auto next_node = new_node->next;
+      if(new_node->random)
+        new_node->random = new_node->random->next;
+      cur = next_node;
     }
     auto dummy = new Node(0);
     auto dummy_cur = dummy;
-    cur_node = head;
-    while(cur_node){
-      dummy_cur->next = cur_node->next;
-      dummy_cur = dummy_cur->next;
-      cur_node->next = cur_node->next->next;
-      dummy_cur->next = nullptr;
-      cur_node = cur_node->next;
+    cur = head;
+    while(cur){
+      auto new_node = cur->next;
+      auto next_node = new_node->next;
+      cur->next = next_node;
+      dummy_cur->next = new_node;
+      dummy_cur = new_node;
+      cur = next_node;
     }
     return dummy->next;
   }

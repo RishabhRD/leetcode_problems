@@ -13,20 +13,20 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> dailyTemperatures(vector<int>& temperatures) {
-      stack<pair<int, int>> st;
-      int n = size(temperatures);
-      vector<int> ans(size(temperatures));
-      for(int i = n - 1; i >= 0; i--){
-        while(not empty(st) and st.top().first <= temperatures[i]){
-          st.pop();
-        }
-        if(empty(st)) ans[i] = 0;
-        else{
-          ans[i] = st.top().second - i;
-        }
-        st.emplace(temperatures[i], i);
+  vector<int> dailyTemperatures(vector<int> &temperatures) {
+    stack<int> st;
+    const int n = size(temperatures);
+    vector<int> res(n);
+    for (int i = n - 1; i >= 0; i--) {
+      while (not empty(st) and temperatures[st.top()] <= temperatures[i]) {
+        st.pop();
       }
-      return ans;
+      if (empty(st))
+        res[i] = 0;
+      else
+        res[i] = st.top() - i;
+      st.push(i);
     }
+    return res;
+  }
 };
