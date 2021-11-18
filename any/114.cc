@@ -20,14 +20,19 @@ struct TreeNode {
     : val(x), left(left), right(right) {}
 };
 
-bool is_bst(TreeNode *root, long min, long max) {
-  if (not root) return true;
-  return (min < root->val and max > root->val)
-         and (is_bst(root->left, min, root->val))
-         and (is_bst(root->right, root->val, max));
+void flatten_tree(TreeNode *root, TreeNode*& prev) {
+  if(root == nullptr) return;
+  flatten_tree(root->right, prev);
+  flatten_tree(root->left, prev);
+  root->right = prev;
+  root->left = nullptr;
+  prev = root;
 }
 
 class Solution {
 public:
-  bool isValidBST(TreeNode *root) { return is_bst(root, numeric_limits<long>::min(), numeric_limits<long>::max()); }
+  void flatten(TreeNode *root) {
+    TreeNode* prev = nullptr;
+    flatten_tree(root, prev);
+  }
 };
