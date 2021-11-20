@@ -1,3 +1,4 @@
+#include <stack>
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -12,17 +13,19 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> nextGreaterElements(vector<int>& nums) {
-      vector<int> stack;
-      const int n = size(nums);
-      vector<int> res(n, -1);
-      for(int i = 0; i < n * 2; i++){
-        while(size(stack) and nums[stack.back()] < nums[i % n]){
-          res[stack.back()] = nums[i % n];
-          stack.pop_back();
-        }
-        stack.push_back(i % n);
+  vector<int> nextGreaterElements(vector<int> &nums) {
+    stack<int> st;
+    const int n = size(nums);
+    vector<int> res(n, -1);
+    auto next_greater_routine = [&] {
+      for (int i = n - 1; i >= 0; i--) {
+        while (size(st) and nums[i] >= nums[st.top()]) { st.pop(); }
+        if (not empty(st)) res[i] = nums[st.top()];
+        st.push(i);
       }
-      return res;
-    }
+    };
+    next_greater_routine();
+    next_greater_routine();
+    return res;
+  }
 };

@@ -12,39 +12,38 @@ using namespace std;
 
 struct Node {
   int data;
-  struct Node *left;
-  struct Node *right;
-
-  Node(int x) {
-    data = x;
-    left = right = NULL;
-  }
+  Node *left;
+  Node *right;
+  Node *random;
 };
 
-pair<Node *, Node *> dll(Node *root) {
-  pair<Node *, Node *> res = { nullptr, nullptr };
-  if (root->left) {
-    auto left_ans = dll(root->left);
-    left_ans.second->right = root;
-    root->left = left_ans.second;
-    res.first = left_ans.first;
-  } else {
-    res.first = root;
+void build_tree(Node *root,
+  Node *&new_root,
+  unordered_map<Node *, Node *> &mp) {
+  if (root == nullptr) {
+    new_root = nullptr;
+    return;
   }
-  if (root->right) {
-    auto right_ans = dll(root->right);
-    right_ans.first->left = root;
-    root->right = right_ans.first;
-    res.second = right_ans.second;
-  } else {
-    res.second = root;
-  }
-  return res;
+  new_root = new Node(root->data);
+  mp[root] = new_root;
+  build_tree(root->left, new_root->left, mp);
+  build_tree(root->right, new_root->right, mp);
+}
+
+void build_random(Node *root, unordered_map<Node *, Node *> &mp) {
+  if (root == nullptr) return;
+  mp[root]->random = mp[root->random];
+  build_random(root->left, mp);
+  build_random(root->right, mp);
 }
 
 class Solution {
 public:
-  Node *bToDLL(Node *root) {
-    return dll(root).first;
+  Node *cloneTree(Node *root) {
+    Node *new_root = nullptr;
+    unordered_map<Node *, Node *> mp;
+    build_tree(root, new_root, mp);
+    build_random(root, mp);
+    return new_root;
   }
 };
