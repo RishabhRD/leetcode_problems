@@ -12,38 +12,50 @@ using namespace std;
 
 struct Node {
   int data;
-  Node *left;
-  Node *right;
-  Node *random;
+  Node *left, *right;
 };
 
-void build_tree(Node *root,
-  Node *&new_root,
-  unordered_map<Node *, Node *> &mp) {
-  if (root == nullptr) {
-    new_root = nullptr;
-    return;
-  }
-  new_root = new Node(root->data);
-  mp[root] = new_root;
-  build_tree(root->left, new_root->left, mp);
-  build_tree(root->right, new_root->right, mp);
+bool is_leaf(Node *root) {
+  return root->left == nullptr and root->right == nullptr;
 }
 
-void build_random(Node *root, unordered_map<Node *, Node *> &mp) {
+void add_left(Node *root, vector<int> &ans) {
   if (root == nullptr) return;
-  mp[root]->random = mp[root->random];
-  build_random(root->left, mp);
-  build_random(root->right, mp);
+  while (!is_leaf(root)) {
+    ans.push_back(root->data);
+    if (root->left)
+      root = root->left;
+    else
+      root = root->right;
+  }
+}
+
+void add_right(Node *root, vector<int> &ans) {
+  if (root == nullptr) return;
+  if (is_leaf(root)) return;
+  if (root->right)
+    add_right(root->right, ans);
+  else
+    add_right(root->left, ans);
+  ans.push_back(root->data);
+}
+
+void add_leaves(Node *root, vector<int> &ans) {
+  if (root == nullptr) return;
+  add_leaves(root->left, ans);
+  if (is_leaf(root)) ans.push_back(root->data);
+  add_leaves(root->right, ans);
 }
 
 class Solution {
 public:
-  Node *cloneTree(Node *root) {
-    Node *new_root = nullptr;
-    unordered_map<Node *, Node *> mp;
-    build_tree(root, new_root, mp);
-    build_random(root, mp);
-    return new_root;
+  vector<int> boundary(Node *root) {
+    if (root == nullptr) return {};
+    vector<int> ans;
+    ans.push_back(root->data);
+    add_left(root->left, ans);
+    if (not is_leaf(root)) add_leaves(root, ans);
+    add_right(root->right, ans);
+    return ans;
   }
 };
