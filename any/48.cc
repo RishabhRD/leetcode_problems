@@ -12,12 +12,12 @@ using namespace std;
 
 class Solution {
 public:
-    void rotate(vector<vector<int>>& matrix) {
-      reverse(begin(matrix), end(matrix));
-      for(size_t i = 0; i < size(matrix); i++){
-        for(size_t j = i + 1; j < size(matrix); j++){
-          swap(matrix[i][j], matrix[j][i]);
-        }
+  void rotate(vector<vector<int>> &matrix) {
+    reverse(begin(matrix), end(matrix));
+    for (int i = 0; i < size(matrix); i++) {
+      for (int j = i + 1; j < size(matrix); j++) {
+        swap(matrix[i][j], matrix[j][i]);
       }
     }
+  }
 };

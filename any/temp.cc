@@ -1,3 +1,4 @@
+#include <queue>
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -10,52 +11,39 @@
 
 using namespace std;
 
-struct Node {
-  int data;
-  Node *left, *right;
-};
+// 0	0000
+// 1	0001
+// 2	0010
+// 3	0011
+// 4	0100
+// 5	0101
+// 6	0110
+// 7	0111
+// 8	1000
+// 9	1001
+// 10	1010
+// 11	1011
+// 12	1100
+// 13	1101
+// 14	1110
+// 15	1111
 
-bool is_leaf(Node *root) {
-  return root->left == nullptr and root->right == nullptr;
-}
+int p2(int x) { return 1 << x; }
 
-void add_left(Node *root, vector<int> &ans) {
-  if (root == nullptr) return;
-  while (!is_leaf(root)) {
-    ans.push_back(root->data);
-    if (root->left)
-      root = root->left;
-    else
-      root = root->right;
-  }
-}
-
-void add_right(Node *root, vector<int> &ans) {
-  if (root == nullptr) return;
-  if (is_leaf(root)) return;
-  if (root->right)
-    add_right(root->right, ans);
-  else
-    add_right(root->left, ans);
-  ans.push_back(root->data);
-}
-
-void add_leaves(Node *root, vector<int> &ans) {
-  if (root == nullptr) return;
-  add_leaves(root->left, ans);
-  if (is_leaf(root)) ans.push_back(root->data);
-  add_leaves(root->right, ans);
+int get_max_2_power(int n) {
+  int x = 0;
+  while (p2(x) <= n) x++;
+  return x - 1;
 }
 
 class Solution {
 public:
-  vector<int> boundary(Node *root) {
-    if (root == nullptr) return {};
-    vector<int> ans;
-    ans.push_back(root->data);
-    add_left(root->left, ans);
-    if (not is_leaf(root)) add_leaves(root, ans);
-    add_right(root->right, ans);
-    return ans;
+  int countSetBits(int n) {
+    if (n == 0) return 0;
+    int x = get_max_2_power(n);
+    int till_2_power_sum = p2(x - 1) * x;
+    int msb_remaining_sum = n - p2(x) + 1;
+    int without_msb_sum = countSetBits(n - p2(x));
+    return till_2_power_sum + msb_remaining_sum + without_msb_sum;
   }
 };

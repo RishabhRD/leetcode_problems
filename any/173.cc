@@ -1,3 +1,4 @@
+#include <stack>
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -5,11 +6,11 @@
 #include <iterator>
 #include <limits>
 #include <numeric>
-#include <stack>
 #include <vector>
 #include <array>
 
 using namespace std;
+
 
 struct TreeNode {
   int val;
@@ -23,12 +24,10 @@ struct TreeNode {
 
 
 class BSTIterator {
-  stack<TreeNode*> st;
+  stack<TreeNode *> st;
 
 public:
-  BSTIterator(TreeNode *root) {
-    push_all(root);
-  }
+  BSTIterator(TreeNode *root) { push_all(root); }
 
   int next() {
     auto top = st.top();
@@ -37,12 +36,11 @@ public:
     return top->val;
   }
 
-  bool hasNext() {
-    return size(st);
-  }
+  bool hasNext() { return !empty(st); }
 
-  void push_all(TreeNode* root){
-    while(root){
+private:
+  void push_all(TreeNode *root) {
+    while (root) {
       st.push(root);
       root = root->left;
     }

@@ -10,39 +10,39 @@
 
 using namespace std;
 
-int dfs(vector<vector<int>> &matrix,
-  int cur_x,
-  int cur_y,
-  vector<vector<int>> &dp) {
-  if (dp[cur_x][cur_y] >= 0) return dp[cur_x][cur_y];
-  constexpr pair<int, int> incr[] = {
-    { -1, 0 }, { 0, -1 }, { 0, 1 }, { 1, 0 }
+int longest_dist(vector<vector<int>> const &matrix,
+  int x,
+  int y,
+  vector<vector<int>> &cache) {
+  if (cache[x][y] != -1) return cache[x][y];
+  constexpr static pair<int, int> d[] = {
+    { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 }
   };
-  int path = 1;
-  for (auto [incr_x, incr_y] : incr) {
-    const int new_x = cur_x + incr_x;
-    const int new_y = cur_y + incr_y;
+  int max_neighbor_dist = 0;
+  for (auto [dx, dy] : d) {
+    int const new_x = x + dx;
+    int const new_y = y + dy;
     if (new_x >= 0 and new_y >= 0 and new_x < size(matrix)
-        and new_y < size(matrix[0])
-        and matrix[cur_x][cur_y] < matrix[new_x][new_y]) {
-      path = max(path, 1 + dfs(matrix, new_x, new_y, dp));
-    }
+        and new_y < size(matrix[0]) and matrix[new_x][new_y] > matrix[x][y])
+      max_neighbor_dist =
+        max(max_neighbor_dist, longest_dist(matrix, x + dx, y + dy, cache));
   }
-  return dp[cur_x][cur_y] = path;
+  return cache[x][y] = max_neighbor_dist + 1;
 }
 
 class Solution {
 public:
   int longestIncreasingPath(vector<vector<int>> &matrix) {
-    vector dp(size(matrix), vector<int>(size(matrix[0]), -1));
-    const int m = size(matrix);
-    const int n = size(matrix[0]);
-    int max_path = 1;
+    int const m = size(matrix);
+    int const n = size(matrix[0]);
+    vector cached_dist(m, vector(n, -1));
+    int max_dist_can_travel = 1;
     for (int i = 0; i < m; i++) {
       for (int j = 0; j < n; j++) {
-        max_path = max(max_path, dfs(matrix, i, j, dp));
+        max_dist_can_travel =
+          max(max_dist_can_travel, longest_dist(matrix, i, j, cached_dist));
       }
     }
-    return max_path;
+    return max_dist_can_travel;
   }
 };

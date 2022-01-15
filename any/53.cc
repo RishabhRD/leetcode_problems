@@ -12,18 +12,13 @@ using namespace std;
 
 class Solution {
 public:
-    int maxSubArray(vector<int>& nums) {
-      int cur_sum = 0;
-      int max_sum = 0;
-      size_t count_neg = 0;
-      int max_ele = INT32_MIN;
-      for(auto n : nums){
-        if(n < 0) count_neg++;
-        cur_sum += n;
-        max_ele = max(max_ele, n);
-        cur_sum = max(cur_sum, 0);
-        max_sum = max(cur_sum, max_sum);
-      }
-      return count_neg == size(nums) ? max_ele : max_sum;
+  int maxSubArray(vector<int> &nums) {
+    int max_sum = nums[0];
+    int storage = nums[0];
+    for (int i = 1; i < size(nums); i++) {
+      storage = max(storage + nums[i], nums[i]);
+      max_sum = max(max_sum, storage);
     }
+    return max_sum;
+  }
 };
