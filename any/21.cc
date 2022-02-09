@@ -18,41 +18,24 @@ struct ListNode {
   ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
-void add(ListNode *&head, ListNode *&tail, ListNode *lst) {
-  if (not head) {
-    head = lst;
-    tail = lst;
-  } else {
-    tail->next = lst;
-    tail = tail->next;
-  }
-}
-
 class Solution {
 public:
-  ListNode *mergeTwoLists(ListNode *l1, ListNode *l2) {
-    ListNode *head = nullptr, *tail = nullptr;
-    while (l1 and l2) {
-      if (l1->val < l2->val) {
-        auto tmp1 = l1;
-        l1 = l1->next;
-        add(head, tail, tmp1);
-      } else {
-        auto tmp2 = l2;
-        l2 = l2->next;
-        add(head, tail, tmp2);
-      }
+  ListNode *mergeTwoLists(ListNode *list1, ListNode *list2) {
+    auto const res_head = new ListNode;
+    auto res = res_head;
+    auto add = [&](auto &list) {
+      res->next = list;
+      res = list;
+      list = list->next;
+    };
+    while (list1 and list2) {
+      if (list1->val < list2->val)
+        add(list1);
+      else
+        add(list2);
     }
-    while (l1) {
-      auto tmp1 = l1;
-      l1 = l1->next;
-      add(head, tail, tmp1);
-    }
-    while (l2) {
-      auto tmp2 = l2;
-      l2 = l2->next;
-      add(head, tail, tmp2);
-    }
-    return head;
+    while (list1) add(list1);
+    while (list2) add(list2);
+    return res_head->next;
   }
 };

@@ -11,28 +11,33 @@
 
 using namespace std;
 
-void add_paren(const int open,
-  const int close,
-  const int n,
-  const string &current,
+void add_paren(int const n,
+  int const open,
+  int const closed,
+  string &cur_str,
   vector<string> &res) {
-  if(size(current) == 2 * n){
-    res.push_back(current);
+  if (size(cur_str) == 2 * n) {
+    res.push_back(cur_str);
     return;
   }
-  if(n > open){
-    add_paren(open + 1, close, n, current + "(", res);
+  if (n > open) {
+    cur_str += '(';
+    add_paren(n, open + 1, closed, cur_str, res);
+    cur_str.pop_back();
   }
-  if(open > close){
-    add_paren(open, close + 1, n, current + ")", res);
+  if (open > closed) {
+    cur_str += ')';
+    add_paren(n, open, closed + 1, cur_str, res);
+    cur_str.pop_back();
   }
 }
 
 class Solution {
 public:
   vector<string> generateParenthesis(int n) {
-    vector<string> vec;
-    add_paren(0, 0, n, ""s, vec);
-    return vec;
+    vector<string> res;
+    string cur;
+    add_paren(n, 0, 0, cur, res);
+    return res;
   }
 };

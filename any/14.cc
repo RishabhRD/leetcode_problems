@@ -8,23 +8,21 @@
 
 using namespace std;
 
-string longestCommonPrefix(vector<string> &strs) {
-  auto min_len = std::accumulate(cbegin(strs),
-    cend(strs),
-    UINT32_MAX,
-    [](const size_t prev_len, const auto &str) {
-      return min(prev_len, size(str));
-    });
-  string new_str = "";
-  for (int i = 0; i < min_len; i++) {
-    const char cur_char = strs[0][i];
-    if (all_of(cbegin(strs), cend(strs), [&](const auto &str) {
-          return str[i] == cur_char;
-        })) {
-      new_str += cur_char;
-    }else{
+string_view prefix(string_view a, string_view b) {
+  auto const n = min(size(a), size(b));
+  string_view s;
+  for (size_t i = 0; i < n; i++) {
+    if (a[i] == b[i])
+      s = a.substr(0, i + 1);
+    else
       break;
-    }
   }
-  return new_str;
+  return s;
 }
+
+class Solution {
+public:
+  string longestCommonPrefix(vector<string> &strs) {
+    return accumulate(begin(strs), end(strs), strs[0], prefix);
+  }
+};

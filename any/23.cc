@@ -11,7 +11,6 @@
 
 using namespace std;
 
-
 struct ListNode {
   int val;
   ListNode *next;
@@ -23,26 +22,22 @@ struct ListNode {
 class Solution {
 public:
   ListNode *mergeKLists(vector<ListNode *> &lists) {
-    auto cmp_nodes = [](ListNode* n1, ListNode* n2){
-      return n1->val > n2->val;
-    };
-    using lnp = ListNode*;
-    priority_queue<lnp, vector<lnp>, decltype(cmp_nodes)> pq(cmp_nodes);
-    for(auto ln_head : lists){
-      while(ln_head){
-        pq.push(ln_head);
-        ln_head = ln_head->next;
-      }
+    auto cmp_nodes = [](auto n1, auto n2) { return n1->val > n2->val; };
+    priority_queue<ListNode *, vector<ListNode *>, decltype(cmp_nodes)> pq(
+      cmp_nodes);
+    for (auto list : lists) {
+      if (list) pq.push(list);
     }
-    lnp dummy = new ListNode;
-    auto cur = dummy;
-    while(not empty(pq)){
+    auto lst_head = new ListNode;
+    auto lst = lst_head;
+    while (not empty(pq)) {
       auto top = pq.top();
       pq.pop();
-      cur->next = top;
-      top->next = nullptr;
-      cur = cur->next;
+      lst->next = top;
+      lst = top;
+      top = top->next;
+      if (top) pq.push(top);
     }
-    return dummy->next;
+    return lst_head->next;
   }
 };

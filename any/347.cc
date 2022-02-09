@@ -1,5 +1,3 @@
-#include <queue>
-#include <unordered_map>
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -7,6 +5,8 @@
 #include <iterator>
 #include <limits>
 #include <numeric>
+#include <queue>
+#include <unordered_map>
 #include <vector>
 #include <array>
 
@@ -16,12 +16,12 @@ class Solution {
 public:
   vector<int> topKFrequent(vector<int> &nums, int k) {
     unordered_map<int, int> mp;
-    for (const auto n : nums) { mp[n]++; }
+    for (auto num : nums) mp[num]++;
     priority_queue<pair<int, int>> pq;
     vector<int> res;
-    for(auto [ele, occur] : mp){
-      pq.emplace(occur, ele);
-      if(size(pq) > (int)size(mp) - k){
+    for (auto [ele, n] : mp) {
+      pq.emplace(n, ele);
+      if (size(pq) > (int)size(mp) - k) {
         res.push_back(pq.top().second);
         pq.pop();
       }

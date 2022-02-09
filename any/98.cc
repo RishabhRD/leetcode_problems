@@ -21,13 +21,16 @@ struct TreeNode {
 };
 
 bool is_bst(TreeNode *root, long min, long max) {
-  if (not root) return true;
-  return (min < root->val and max > root->val)
-         and (is_bst(root->left, min, root->val))
-         and (is_bst(root->right, root->val, max));
+  if (root == nullptr) return true;
+  return (root->val > min) and (root->val < max)
+         and is_bst(root->left, min, root->val)
+         and is_bst(root->right, root->val, max);
 }
 
 class Solution {
 public:
-  bool isValidBST(TreeNode *root) { return is_bst(root, numeric_limits<long>::min(), numeric_limits<long>::max()); }
+  bool isValidBST(TreeNode *root) {
+    return is_bst(
+      root, numeric_limits<long>::min(), numeric_limits<long>::max());
+  }
 };
