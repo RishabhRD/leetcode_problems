@@ -10,37 +10,22 @@
 
 using namespace std;
 
-void print(vector<int>& vec){
-  for(int num : vec){
-    cout << num << " ";
-  }
-  cout << endl;
-}
-
 class Solution {
 public:
   int firstMissingPositive(vector<int> &nums) {
-    const int n = size(nums);
-    for(int& num : nums){
-      if(num <= 0 or num > n){
-        num = n + 1;
+    int const n = size(nums);
+    nums.push_back(0);
+    for (int &num : nums) {
+      if (num < 0 || num > n) num = 0;
+    }
+    for (int i = 0; i <= n; i++) {
+      while (i != nums[i] and nums[i] != nums[nums[i]]) {
+        swap(nums[i], nums[nums[i]]);
       }
     }
-    for(int num : nums){
-      num = abs(num);
-      if(num == n + 1) continue;
-      num--;
-      if(nums[num] > 0) nums[num] = -nums[num];
-    }
-    for(int i = 0; i < n; i++){
-      if(nums[i] > 0) return i + 1;
+    for (int i = 1; i <= n; i++) {
+      if (nums[i] != i) return i;
     }
     return n + 1;
   }
 };
-
-int main(){
-  vector<int> nums{3, 4, -1, 1};
-  Solution sol;
-  cout << sol.firstMissingPositive(nums) << endl;
-}

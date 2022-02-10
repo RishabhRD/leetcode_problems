@@ -13,32 +13,22 @@ using namespace std;
 class Solution {
 public:
   bool isMatch(const string &s, const string &p) {
-    int i = 0, j = 0;
-    int star = -1;
-    int match = 0;
-    const int m = size(s);
-    const int n = size(p);
-    while (i < m) {
-      if (j < n and (s[i] == p[j] or p[j] == '?')) {
-        i++;
-        j++;
-      } else if (j < n and p[j] == '*') {
-        match = i;
-        star = j;
-        j++;
-      } else if (star != -1) {
-        j = star + 1;
-        i = ++match;
-      } else {
-        return false;
+    int const m = size(s);
+    int const n = size(p);
+    vector dp(m + 1, vector(n + 1, false));
+    dp[0][0] = true;
+    for (int j = 1; j <= n; j++) {
+      dp[0][j] = p[j - 1] == '*' and dp[0][j - 1];
+    }
+    for (int i = 1; i <= m; i++) {
+      for (int j = 1; j <= n; j++) {
+        if (s[i - 1] == p[j - 1] || p[j - 1] == '?')
+          dp[i][j] = dp[i - 1][j - 1];
+        else if (p[j - 1] == '*') {
+          dp[i][j] = dp[i][j - 1] || dp[i - 1][j - 1] || dp[i - 1][j];
+        }
       }
     }
-    while (j < n and p[j] == '*') { j++; }
-    return j == n;
+    return dp[m][n];
   }
 };
-
-int main() {
-  Solution sol;
-  cout << sol.isMatch("ab", "?*") << endl;
-}

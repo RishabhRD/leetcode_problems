@@ -10,48 +10,70 @@
 
 using namespace std;
 
-auto get_next_dir(pair<int, int> cur_dir) -> pair<int, int>{
-  constexpr static auto right = pair{0, 1};
-  constexpr static auto down = pair{1, 0};
-  constexpr static auto left = pair{0, -1};
-  constexpr static auto up = pair{-1, 0};
-  if(cur_dir == right) return down;
-  else if(cur_dir == down) return left;
-  else if(cur_dir == left) return up;
-  else return right;
+enum class direction_t { left, right, up, down };
+
+pair<int, int> to_point(direction_t dir) {
+  switch (dir) {
+  case direction_t::left:
+    return { 0, -1 };
+  case direction_t::right:
+    return { 0, 1 };
+  case direction_t::up:
+    return { -1, 0 };
+  default:
+    return { 1, 0 };
+  };
+}
+
+auto next_point_in_dir(pair<int, int> cur_point, direction_t cur_dir) {
+  auto [cur_x, cur_y] = cur_point;
+  auto [dx, dy] = to_point(cur_dir);
+  return pair{ cur_x + dx, cur_y + dy };
+}
+
+auto next_direction(direction_t cur_dir) {
+  switch (cur_dir) {
+  case direction_t::right:
+    return direction_t::down;
+  case direction_t::down:
+    return direction_t::left;
+  case direction_t::left:
+    return direction_t::up;
+  default:
+    return direction_t::right;
+  };
 }
 
 class Solution {
 public:
-    vector<int> spiralOrder(vector<vector<int>>& matrix) {
-      const int m = size(matrix);
-      const int n = size(matrix[0]);
-      auto is_in = [&](int i, int j){
-        return i >= 0 and j >= 0 and i < m and j < n;
-      };
-      vector visited(m, vector(n, false));
-      pair<int,int> cur_dir = {0, 1};
-      pair<int, int> cur_idx = {0, 0};
-      vector<int> result;
-      while(true){
-        auto [cur_x, cur_y] = cur_idx;
-        visited[cur_x][cur_y] = true;
-        result.push_back(matrix[cur_x][cur_y]);
-        int new_x = cur_x + cur_dir.first;
-        int new_y = cur_y + cur_dir.second;
-        if(!is_in(new_x, new_y) or visited[new_x][new_y]){
-          cur_dir = get_next_dir(cur_dir);
-          new_x = cur_x + cur_dir.first;
-          new_y = cur_y + cur_dir.second;
-          if(!is_in(new_x, new_y) or visited[new_x][new_y]){
-            break;
-          }else{
-            cur_idx = {new_x, new_y};
-          }
-        }else{
-          cur_idx = {new_x, new_y};
+  vector<int> spiralOrder(vector<vector<int>> &matrix) {
+    auto cur_dir = direction_t::right;
+    const int m = size(matrix);
+    const int n = size(matrix[0]);
+    vector visited(m, vector(n, false));
+    auto is_valid_point = [&](auto point) {
+      auto const [x, y] = point;
+      return x >= 0 and x < m and y >= 0 and y < n and (!visited[x][y]);
+    };
+    auto cur_point = pair{ 0, 0 };
+    vector<int> res;
+    while (true) {
+      auto const [x, y] = cur_point;
+      res.push_back(matrix[x][y]);
+      visited[x][y] = true;
+      auto const new_point = next_point_in_dir(cur_point, cur_dir);
+      if (!is_valid_point(new_point)) {
+        cur_dir = next_direction(cur_dir);
+        auto const new_point = next_point_in_dir(cur_point, cur_dir);
+        if (!is_valid_point(new_point)) {
+          break;
+        } else {
+          cur_point = new_point;
         }
+      } else {
+        cur_point = new_point;
       }
-      return result;
     }
+    return res;
+  }
 };

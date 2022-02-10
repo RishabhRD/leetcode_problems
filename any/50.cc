@@ -12,13 +12,17 @@ using namespace std;
 
 class Solution {
 public:
-  int uniquePaths(int m, int n) {
-    vector pre(n, 1);
-    vector cur(n, 1);
-    for (int i = 1; i < m; i++) {
-      for (int j = 1; j < n; j++) { cur[j] = pre[j] + cur[j - 1]; }
-      swap(pre, cur);
+  double myPow(double x, int n) {
+    double res = 1;
+    for (; n; n /= 2) {
+      if (n & 1) {
+        if (n > 0)
+          res *= x;
+        else
+          res /= x;
+      }
+      x *= x;
     }
-    return pre[n - 1];
+    return res;
   }
 };

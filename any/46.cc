@@ -8,87 +8,28 @@
 
 using namespace std;
 
-template <typename T>
-concept is_container = requires(T a) {
-  a.begin();
-  a.end();
-};
-
-template <is_container T>
-requires(!std::same_as<T, std::string>) std::ostream &
-operator<<(std::ostream &os, const T &cont) {
-  os << '{';
-  for (const auto &x : cont) {
-    os << x;
-    os << ' ';
-  }
-  os << '}';
-  return os;
-}
-
-void printMatrix(const is_container auto &cont) {
-  for (const auto &x : cont) {
-    cout << x;
-    cout << '\n';
-  }
-}
-
-template <typename T, std::size_t... Is>
-constexpr std::array<T, sizeof...(Is)>
-create_array(T value, std::index_sequence<Is...>) {
-  return {{(static_cast<void>(Is), value)...}};
-}
-
-template <std::size_t N, typename T>
-constexpr std::array<T, N> create_array(const T &value) {
-  return create_array(value, std::make_index_sequence<N>());
-}
-template <typename T> constexpr auto accessor(T &t) {
-  return [&](int i) -> typename T::reference { return t.at(i); };
-}
-
-template <typename T> constexpr auto accessor(const T &t) {
-  return [&](int i) { return t.at(i); };
-}
-
-template <typename T> constexpr auto const_accessor(T &t) {
-  return [&](int i) { return t.at(i); };
-}
-
-template <typename T> constexpr auto matrix_accessor(T &t) {
-  return [&](int i, int j) ->
-         typename T::value_type::reference { return t.at(i).at(j); };
-}
-
-template <typename T> constexpr auto matrix_accessor(const T &t) {
-  return [&](int i, int j) { return t.at(i).at(j); };
-}
-
-template <typename T> constexpr auto const_matrix_accessor(T &t) {
-  return [&](int i, int j) { return t.at(i).at(j); };
-}
-
-template <typename T> using lmt = std::numeric_limits<T>;
-
-template <typename T, std::size_t N>
-constexpr std::size_t array_size(const T (&)[N]) noexcept {
-  return N;
-}
-
-auto permute_recurse(vector<int>& nums, int begin, vector<vector<int>>& output) noexcept{
-  if(begin >= nums.size()){
-    output.emplace_back(nums);
+void perm(vector<int> const &nums,
+  vector<int> &cur_list,
+  vector<vector<int>> &res) {
+  if (size(cur_list) == size(nums)) {
+    res.push_back(cur_list);
     return;
   }
-  for(int i = begin; i < nums.size(); i++){
-    swap(nums[i], nums[begin]);
-    permute_recurse(nums, begin + 1, output);
-    swap(nums[i], nums[begin]);
+  for (int const num : nums) {
+    if (std::find(cbegin(cur_list), cend(cur_list), num) != cend(cur_list))
+      continue;
+    cur_list.push_back(num);
+    perm(nums, cur_list, res);
+    cur_list.pop_back();
   }
 }
 
-auto permute(vector<int> &nums) noexcept {
-  vector<vector<int>> output;
-  permute_recurse(nums, 0, output);
-  return output;
-}
+class Solution {
+public:
+  vector<vector<int>> permute(vector<int> &nums) {
+    vector<vector<int>> res;
+    vector<int> cur;
+    perm(nums, cur, res);
+    return res;
+  }
+};
