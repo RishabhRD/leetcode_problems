@@ -1,3 +1,10 @@
+#include <unordered_map>
+#include <unordered_set>
+#include <map>
+#include <set>
+#include <queue>
+#include <deque>
+#include <stack>
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -27,33 +34,31 @@ class Solution {
 public:
   Node *copyRandomList(Node *head) {
     auto cur = head;
-    while(cur){
-      Node* new_node = new Node(cur->val);
-      Node* next_node = cur->next;
+    while (cur) {
+      auto next_node = cur->next;
+      auto new_node = new Node(cur->val);
       new_node->next = next_node;
       new_node->random = cur->random;
       cur->next = new_node;
       cur = next_node;
     }
     cur = head;
-    while(cur){
-      auto new_node = cur->next;
-      auto next_node = new_node->next;
-      if(new_node->random)
-        new_node->random = new_node->random->next;
-      cur = next_node;
+    while (cur) {
+      cur->next->random = cur->random ? cur->random->next : nullptr;
+      cur = cur->next->next;
     }
-    auto dummy = new Node(0);
-    auto dummy_cur = dummy;
+    Node *res_head = new Node(0);
+    Node *res = res_head;
     cur = head;
-    while(cur){
-      auto new_node = cur->next;
-      auto next_node = new_node->next;
+    while (cur) {
+      auto next_node = cur->next->next;
+      auto copy_node = cur->next;
+      res->next = copy_node;
+      res = copy_node;
       cur->next = next_node;
-      dummy_cur->next = new_node;
-      dummy_cur = new_node;
+      copy_node->next = next_node ? next_node->next : nullptr;
       cur = next_node;
     }
-    return dummy->next;
+    return res_head->next;
   }
 };

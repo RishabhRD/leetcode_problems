@@ -10,26 +10,26 @@
 
 using namespace std;
 
-bool is_palindrome(string_view str, size_t begin, size_t end) {
-  while (begin < end) {
-    if (str[begin++] != str[end--]) return false;
+bool is_palin(string_view str, int low, int high) {
+  while (low < high) {
+    if (str[low++] != str[high--]) return false;
   }
   return true;
 }
 
-void dfs(vector<vector<string>> &result,
-  vector<string_view> &cur_result,
-  size_t cur_idx,
-  string_view str) {
-  if (cur_idx == size(str)) {
-    result.emplace_back(cbegin(cur_result), cend(cur_result));
+void dfs(string_view str,
+  int start,
+  vector<string> &cur,
+  vector<vector<string>> &res) {
+  if (start == size(str)) {
+    res.push_back(cur);
     return;
   }
-  for(size_t i = cur_idx; i < size(str); i++){
-    if(is_palindrome(str, cur_idx, i)){
-      cur_result.push_back(str.substr(cur_idx, i - cur_idx + 1));
-      dfs(result, cur_result, i + 1, str);
-      cur_result.pop_back();
+  for (int i = start; i < size(str); i++) {
+    if (is_palin(str, start, i)) {
+      cur.push_back(string{ str.substr(start, i - start + 1) });
+      dfs(str, i + 1, cur, res);
+      cur.pop_back();
     }
   }
 }
@@ -37,9 +37,15 @@ void dfs(vector<vector<string>> &result,
 class Solution {
 public:
   vector<vector<string>> partition(string s) {
-    vector<string_view> cur_result;
-    vector<vector<string>> result;
-    dfs(result, cur_result, 0, s);
-    return result;
+    vector<vector<string>> res;
+    vector<string> cur;
+    dfs(s, 0, cur, res);
+    return res;
   }
 };
+
+int main() {
+  string s = "aab";
+  Solution sol;
+  sol.partition(s);
+}

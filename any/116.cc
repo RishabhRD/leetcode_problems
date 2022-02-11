@@ -33,20 +33,17 @@ public:
     queue<Node *> q;
     q.push(root);
     while (not empty(q)) {
-      const int n = size(q);
-      auto prev = q.front();
-      q.pop();
-      if (prev->left) { q.push(prev->left); }
-      if (prev->right) { q.push(prev->right); }
-      for (int i = 1; i < n; i++) {
-        auto cur = q.front();
+      auto sz = size(q);
+      Node *last = nullptr;
+      while (sz--) {
+        auto top = q.front();
         q.pop();
-        if (cur->left) { q.push(cur->left); }
-        if (cur->right) { q.push(cur->right); }
-        prev->next = cur;
-        prev = cur;
+        top->next = nullptr;
+        if (last) last->next = top;
+        if (top->left) q.push(top->left);
+        if (top->right) q.push(top->right);
+        last = top;
       }
-      prev->next = nullptr;
     }
     return root;
   }

@@ -16,19 +16,12 @@ public:
     int low = 0;
     int high = size(s) - 1;
     while (low < high) {
-      if (!isalnum(s[low])) {
+      if (!isalnum(s[low]))
         low++;
-      } else if (!isalnum(s[high])) {
+      else if (!isalnum(s[high]))
         high--;
-      } else {
-        char low_c = tolower(s[low]);
-        char high_c = tolower(s[high]);
-        if (low_c == high_c) {
-          low++;
-          high--;
-        } else {
-          return false;
-        }
+      else {
+        if (tolower(s[low++]) != tolower(s[high--])) return false;
       }
     }
     return true;

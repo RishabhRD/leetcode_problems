@@ -11,44 +11,26 @@
 
 using namespace std;
 
-bool contains(unordered_map<int, int> &st, int num) {
+auto contains(unordered_set<int> const &st, int num) {
   return st.find(num) != st.end();
 }
 
-int find(int x, vector<int> &parent) {
-  if (parent[x] == -1) return x;
-  return parent[x] = find(parent[x], parent);
-}
-
-void combine(int x, int y, vector<int> &parent, vector<int> &size) {
-  int root_x = find(x, parent);
-  int root_y = find(y, parent);
-  if (root_x == root_y) return;
-  if (size[root_y] > size[root_x]) {
-    parent[root_x] = root_y;
-    size[root_y] += size[root_x];
-  } else {
-    parent[root_y] = root_x;
-    size[root_x] += size[root_y];
-  }
+int dfs(unordered_set<int> const &st, int num, unordered_set<int> &visited) {
+  if (contains(visited, num)) return 0;
+  visited.insert(num);
+  int ans = 1;
+  if (contains(st, num + 1)) { ans += dfs(st, num + 1, visited); }
+  if (contains(st, num - 1)) { ans += dfs(st, num - 1, visited); }
+  return ans;
 }
 
 class Solution {
 public:
   int longestConsecutive(vector<int> &nums) {
-    if(empty(nums)) return 0;
-    unordered_map<int, int> mp;
-    vector<int> parent(size(nums), -1);
-    vector<int> sz(size(nums), 1);
-    for (int i = 0; i < size(nums); i++) {
-      mp[nums[i]] = i;
-    }
-    for(int i =  0; i < size(nums); i++){
-      const int n = nums[i];
-      if(contains(mp, n + 1)){
-        combine(mp[n], mp[n + 1], parent, sz);
-      }
-    }
-    return *max_element(cbegin(sz), cend(sz));
+    unordered_set<int> const st{ begin(nums), end(nums) };
+    unordered_set<int> visited;
+    int max_len = 0;
+    for (auto num : nums) { max_len = max(max_len, dfs(st, num, visited)); }
+    return max_len;
   }
 };

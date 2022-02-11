@@ -25,25 +25,25 @@ struct TreeNode {
 class Solution {
 public:
   vector<vector<int>> zigzagLevelOrder(TreeNode *root) {
-    vector<vector<int>> result;
-    if (root == nullptr) return result;
+    if (root == nullptr) return {};
+    vector<vector<int>> res;
     queue<TreeNode *> q;
     q.push(root);
-    bool l2r = false;
+    bool r2l = false;
     while (not empty(q)) {
       auto sz = size(q);
-      vector<int> vec;
+      vector<int> cur;
       while (sz--) {
         auto top = q.front();
-        vec.push_back(top->val);
         q.pop();
+        cur.push_back(top->val);
         if (top->left) q.push(top->left);
         if (top->right) q.push(top->right);
       }
-      l2r = !l2r;
-      if (!l2r) std::reverse(begin(vec), end(vec));
-      result.push_back(std::move(vec));
+      if (r2l) reverse(begin(cur), end(cur));
+      res.push_back(move(cur));
+      r2l = !r2l;
     }
-    return result;
+    return res;
   }
 };

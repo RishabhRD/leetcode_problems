@@ -20,24 +20,22 @@ struct TreeNode {
     : val(x), left(left), right(right) {}
 };
 
-TreeNode* get_root(vector<int>& preorder, vector<int>& inorder, int low, int high, int& cur_idx){
-  if(low > high) return nullptr;
-  int cur_ele = preorder[cur_idx];
-  TreeNode* root = new TreeNode(cur_ele);
-  int i = low;
-  for(; i <= high; i++){
-    if(inorder[i] == cur_ele) break;
-  }
-  cur_idx++;
-  root->left = get_root(preorder, inorder, low, i - 1, cur_idx);
-  root->right = get_root(preorder, inorder, i + 1, high, cur_idx);
-  return root;
+template<typename Iter, typename PIter>
+TreeNode *create_tree(Iter low, Iter high, PIter &preorder) {
+  if (low >= high) return nullptr;
+  auto const node_val = *preorder;
+  auto const node_iter = std::find(low, high, node_val);
+  auto new_node = new TreeNode(node_val);
+  preorder++;
+  new_node->left = create_tree(low, node_iter, preorder);
+  new_node->right = create_tree(next(node_iter), high, preorder);
+  return new_node;
 }
 
 class Solution {
 public:
   TreeNode *buildTree(vector<int> &preorder, vector<int> &inorder) {
-    int cur_idx = 0;
-    return get_root(preorder, inorder, 0, size(preorder) - 1, cur_idx);
+    auto p_iter = begin(preorder);
+    return create_tree(begin(inorder), end(inorder), p_iter);
   }
 };

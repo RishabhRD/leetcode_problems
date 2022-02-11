@@ -20,16 +20,21 @@ struct TreeNode {
     : val(x), left(left), right(right) {}
 };
 
-TreeNode *create_bst(vector<int> &nums, int low, int high) {
-  if (low > high) return nullptr;
-  int mid = (low + high) / 2;
-  return new TreeNode(
-    nums[mid], create_bst(nums, low, mid - 1), create_bst(nums, mid + 1, high));
+template<typename Iter> TreeNode *sorted_bst(Iter begin, Iter end) {
+  if (begin >= end) return nullptr;
+  auto const count = distance(begin, end);
+  auto const step = count / 2;
+  Iter mid = begin;
+  advance(mid, step);
+  auto tree_node = new TreeNode(*mid);
+  tree_node->left = sorted_bst(begin, mid);
+  tree_node->right = sorted_bst(next(mid), end);
+  return tree_node;
 }
 
 class Solution {
 public:
   TreeNode *sortedArrayToBST(vector<int> &nums) {
-    return create_bst(nums, 0, size(nums) - 1);
+    return sorted_bst(begin(nums), end(nums));
   }
 };

@@ -12,41 +12,55 @@
 
 using namespace std;
 
+
 class LRUCache {
-  std::list<pair<int, int>> lst;
-  unordered_map<int, decltype(lst)::iterator> mp;
+  struct node {
+    int key;
+    int val;
+  };
   int cap;
-
-  private:
-  inline void insert(int key, int val) {
-    lst.emplace_back(key, val);
-    mp[key] = prev(end(lst));
-  }
-
-  inline void remove(int key) {
-    lst.erase(mp[key]);
-  }
-
-  inline bool contains(int key) { return mp.find(key) != mp.end(); }
+  using lst_type = list<node>;
+  unordered_map<int, lst_type::iterator> mp;
+  lst_type lst;
 
 public:
-  LRUCache(int capacity) : cap(capacity) {}
+  LRUCache(int capacity) : cap{ capacity } {}
 
   int get(int key) {
     if (!contains(key)) { return -1; }
-    int val = mp[key]->second;
-    remove(key);
-    insert(key, val);
-    return val;
+    auto [k, v] = *mp[key];
+    shift_to_end(key);
+    return v;
   }
 
-  void put(int key, int value) {
-    if (contains(key)) { remove(key); }
-    insert(key, value);
-    if (lst.size() > cap) {
-      auto old_key = lst.front().first;
-      mp.erase(old_key);
-      lst.pop_front();
+  void put(int key, int val) {
+    if (contains(key)) {
+      shift_to_end(key);
+      lst.back() = { key, val };
+    } else {
+      push_to_end(key, val);
+      if (size(lst) > cap) { del_first(); }
     }
+  }
+
+public:
+  void del_first() {
+    auto [k, v] = lst.front();
+    lst.pop_front();
+    mp.erase(k);
+  }
+
+  bool contains(int key) { return mp.find(key) != mp.end(); }
+
+  void shift_to_end(int key) {
+    auto itr = mp[key];
+    auto [k, v] = *itr;
+    lst.erase(itr);
+    push_to_end(k, v);
+  }
+
+  void push_to_end(int k, int v) {
+    lst.push_back({ k, v });
+    mp[k] = prev(end(lst));
   }
 };

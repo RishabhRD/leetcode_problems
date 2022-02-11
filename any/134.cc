@@ -12,23 +12,21 @@ using namespace std;
 
 class Solution {
 public:
-    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
-      int sum = 0;
-      for(size_t i = 0; i < size(gas); i++){
-        sum += gas[i] - cost[i];
+  int canCompleteCircuit(vector<int> &gas, vector<int> &cost) {
+    int const n = size(gas);
+    auto at = [&](int i) { return gas[i % n] - cost[i % n]; };
+    int dist_covered = 0;
+    int cur_sum = 0;
+    for (int i = 0; i < 2 * n; i++) {
+      cur_sum += at(i);
+      if (cur_sum < 0) {
+        cur_sum = 0;
+        dist_covered = 0;
+      } else {
+        dist_covered++;
+        if (dist_covered == n) { return (i - n + 1) % n; }
       }
-      if(sum < 0) return -1;
-      int accumulated = 0;
-      int start_point = 0;
-      for(size_t i = 0; i < size(gas); i++){
-        int cur_gain = gas[i] - cost[i];
-        if(cur_gain + accumulated < 0){
-          start_point = i + 1;
-          accumulated = 0;
-        }else{
-          accumulated += cur_gain;
-        }
-      }
-      return start_point;
     }
+    return -1;
+  }
 };
