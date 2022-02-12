@@ -13,14 +13,14 @@ using namespace std;
 class Solution {
 public:
   int rob(vector<int> &nums) {
-    const int n = size(nums);
-    vector<int> dp(n);
-    if(n == 1) return nums.back();
-    dp[0] = nums[0];
-    dp[1] = max(nums[0], nums[1]);
-    for(int i = 2; i < n; i++){
-      dp[i] = max(nums[i] + dp[i - 2], dp[i - 1]);
+    int const n = size(nums);
+    int dp0 = 0;
+    int dp1 = nums[0];
+    for (int i = 2; i <= n; i++) {
+      int const new_dp = max(dp1, dp0 + nums[i - 1]);
+      dp0 = dp1;
+      dp1 = new_dp;
     }
-    return dp[n - 1];
+    return dp1;
   }
 };

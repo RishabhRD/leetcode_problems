@@ -12,9 +12,10 @@ using namespace std;
 
 class Solution {
 public:
-    bool isAnagram(string s, string t) {
-      sort(begin(s), end(s));
-      sort(begin(t), end(t));
-      return s == t;
-    }
+  bool isAnagram(string s, string t) {
+    array<int, 128> freq{ 0 };
+    for (auto c : s) freq[c]++;
+    for (auto c : t) freq[c]--;
+    return count(begin(freq), end(freq), 0) == 128;
+  }
 };

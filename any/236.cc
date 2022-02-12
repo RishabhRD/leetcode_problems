@@ -28,14 +28,9 @@ public:
       return root;
     else if (left)
       return left;
-    else
+    else if (right)
       return right;
+    else
+      return nullptr;
   }
 };
-
-int main(){
-  const char* str = "leoforce@2020";
-  const char* p = str;
-  printf("%s", str + str[0] - str[3] + 1);
-  return 0;
-}

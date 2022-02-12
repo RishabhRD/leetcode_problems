@@ -15,14 +15,14 @@ public:
   int majorityElement(vector<int> &nums) {
     int cnt = 1;
     int voted = nums[0];
-    for(int i = 1; i < size(nums); i++){
-      if(nums[i] == voted){
+    for (int i = 1; i < size(nums); i++) {
+      if (voted == nums[i])
         cnt++;
-      }else{
-        cnt--;
-        if(cnt == 0){
-          voted = nums[i];
+      else {
+        --cnt;
+        if (cnt == 0) {
           cnt = 1;
+          voted = nums[i];
         }
       }
     }

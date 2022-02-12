@@ -13,43 +13,40 @@ using namespace std;
 
 class Trie {
   struct trie_node {
-    vector<trie_node *> children{ 128, nullptr };
     bool is_leaf;
-    trie_node() : is_leaf(false) {}
-  } * root;
+    array<trie_node *, 128> children{ nullptr };
+  };
+
+  trie_node *head;
 
 public:
-  Trie() : root(new trie_node) {}
+  Trie() : head{ new trie_node{ false } } {}
 
   void insert(string word) {
-    auto cur_node = root;
+    auto cur = head;
     for (auto c : word) {
-      if (!cur_node->children[c]) { cur_node->children[c] = new trie_node{}; }
-      cur_node = cur_node->children[c];
+      if (cur->children[c] == nullptr) {
+        cur->children[c] = new trie_node{ false };
+      }
+      cur = cur->children[c];
     }
-    cur_node->is_leaf = true;
+    cur->is_leaf = true;
   }
 
   bool search(string word) {
-    auto cur_node = root;
+    auto cur = head;
     for (auto c : word) {
-      if (cur_node->children[c]) {
-        cur_node = cur_node->children[c];
-      } else {
-        return false;
-      }
+      if (cur->children[c] == nullptr) return false;
+      cur = cur->children[c];
     }
-    return cur_node->is_leaf == true;
+    return cur->is_leaf;
   }
 
-  bool startsWith(string word) {
-    auto cur_node = root;
-    for (auto c : word) {
-      if (cur_node->children[c]) {
-        cur_node = cur_node->children[c];
-      } else {
-        return false;
-      }
+  bool startsWith(string prefix) {
+    auto cur = head;
+    for (auto c : prefix) {
+      if (cur->children[c] == nullptr) return false;
+      cur = cur->children[c];
     }
     return true;
   }

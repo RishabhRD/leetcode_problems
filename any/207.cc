@@ -10,39 +10,38 @@
 
 using namespace std;
 
-auto get_graph(const int n, const vector<vector<int>>& edges){
-  vector<vector<int>> graph(n);
-  for(const auto& e : edges){
-    graph[e[0]].push_back(e[1]);
-  }
+auto get_graph(vector<vector<int>> const &pre) {
+  unordered_map<int, vector<int>> graph;
+  for (auto const &vec : pre) { graph[vec[0]].push_back(vec[1]); }
   return graph;
 }
 
-bool dfs(const vector<vector<int>>& graph, const int cur_node, vector<bool>& visited, vector<bool>& cur_rec){
-  if(cur_rec[cur_node]) return true;
-  if(visited[cur_node]) return false;
-  cur_rec[cur_node] = true;
-  visited[cur_node] = true;
-  for(auto node : graph[cur_node]){
-    if(dfs(graph, node, visited, cur_rec)){
-      return true;
-    }
+bool has_cycle(unordered_map<int, vector<int>> &graph,
+  int i,
+  vector<bool> &visited,
+  vector<bool> &currently_visiting) {
+  if (currently_visiting[i]) return true;
+  if (visited[i]) return false;
+  visited[i] = true;
+  currently_visiting[i] = true;
+  for (auto neigh : graph[i]) {
+    if (has_cycle(graph, neigh, visited, currently_visiting)) return true;
   }
-  cur_rec[cur_node] = false;
+  currently_visiting[i] = false;
   return false;
 }
 
 class Solution {
 public:
-    bool canFinish(int n, vector<vector<int>>& edges) {
-      const auto graph = get_graph(n, edges);
-      vector<bool> visited(n);
-      vector<bool> cur_rec(n);
-      for(int i = 0; i < n; i++){
-        if(dfs(graph, i, visited, cur_rec)){
-          return false;
-        }
+  bool canFinish(int numCourses, vector<vector<int>> &prerequisites) {
+    vector visited(numCourses, false);
+    vector is_cyclic(numCourses, false);
+    auto graph = get_graph(prerequisites);
+    for (int i = 0; i < numCourses; i++) {
+      if (not visited[i]) {
+        if (has_cycle(graph, i, visited, is_cyclic)) return false;
       }
-      return true;
     }
+    return true;
+  }
 };

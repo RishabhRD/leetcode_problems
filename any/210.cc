@@ -1,3 +1,10 @@
+#include <unordered_map>
+#include <unordered_set>
+#include <map>
+#include <set>
+#include <queue>
+#include <deque>
+#include <stack>
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -10,41 +17,43 @@
 
 using namespace std;
 
-auto get_graph(const int n, const vector<vector<int>>& edges){
-  vector<vector<int>> graph(n);
-  for(const auto& e : edges){
-    graph[e[0]].push_back(e[1]);
-  }
+auto get_graph(vector<vector<int>> &pre) {
+  unordered_map<int, vector<int>> graph;
+  for (auto const &edges : pre) { graph[edges[1]].push_back(edges[0]); }
   return graph;
 }
 
-bool dfs(const vector<vector<int>>& graph, const int cur_node, vector<bool>& visited, vector<bool>& cur_rec, vector<int>& res){
-  if(cur_rec[cur_node]) return true;
-  if(visited[cur_node]) return false;
-  visited[cur_node] = true;
-  cur_rec[cur_node] = true;
-  for(auto node : graph[cur_node]){
-    if(dfs(graph, node, visited, cur_rec, res)){
-      return true;
-    }
+bool has_cycle(unordered_map<int, vector<int>> &graph,
+  int i,
+  vector<bool> &visited,
+  vector<bool> &currently_visited,
+  vector<int> &res) {
+  if (currently_visited[i]) { return true; }
+  if (visited[i]) return false;
+  visited[i] = true;
+  currently_visited[i] = true;
+  for (auto n : graph[i]) {
+    if (has_cycle(graph, n, visited, currently_visited, res)) return true;
   }
-  res.push_back(cur_node);
-  cur_rec[cur_node] = false;
+  res.push_back(i);
+  currently_visited[i] = false;
   return false;
 }
 
 class Solution {
 public:
-    vector<int> findOrder(int n, vector<vector<int>>& edges) {
-      const auto graph = get_graph(n, edges);
-      vector<bool> visited(n);
-      vector<bool> cur_rec(n);
-      vector<int> res;
-      for(int i = 0; i < n; i++){
-        if(dfs(graph, i, visited, cur_rec, res)){
-          return {};
-        }
+  vector<int> findOrder(int numCourses, vector<vector<int>> &prerequisites) {
+    vector visited(numCourses, false);
+    vector currently_visited(numCourses, false);
+    auto graph{ get_graph(prerequisites) };
+    vector<int> res;
+    for (int i = 0; i < numCourses; i++) {
+      if (has_cycle(graph, i, visited, currently_visited, res)) {
+        res.clear();
+        break;
       }
-      return res;
     }
+    reverse(begin(res), end(res));
+    return res;
+  }
 };

@@ -21,22 +21,22 @@ struct TreeNode {
     : val(x), left(left), right(right) {}
 };
 
-template<typename Func> void kth_ele(TreeNode *root, Func &&func) {
-  if (root == nullptr) { return; }
-  kth_ele(root->left, func);
+template<typename Func> void inorder_traversal(TreeNode *root, Func &&func) {
+  if (root == nullptr) return;
+  inorder_traversal(root->left, func);
   func(root->val);
-  kth_ele(root->right, func);
+  inorder_traversal(root->right, func);
 }
 
 class Solution {
 public:
   int kthSmallest(TreeNode *root, int k) {
-    int ele;
-    auto func = [&, cur = 1](int num) mutable {
-      if (cur == k) ele = num;
-      cur++;
+    auto ele{ 0 };
+    auto func = [&](int val) {
+      k--;
+      if (k == 0) ele = val;
     };
-    kth_ele(root, func);
+    inorder_traversal(root, func);
     return ele;
   }
 };
