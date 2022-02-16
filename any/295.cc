@@ -10,29 +10,39 @@
 using namespace std;
 
 class MedianFinder {
-  priority_queue<double> f_h;
-  priority_queue<double, vector<double>, greater<double>> s_h;
+  priority_queue<int> left;
+  priority_queue<int, vector<int>, greater<int>> right;
 
 public:
   MedianFinder() {}
 
   void addNum(int num) {
-    if (size(f_h) == size(s_h)) {
-      s_h.push(num);
-      f_h.push(s_h.top());
-      s_h.pop();
-    } else {
-      f_h.push(num);
-      s_h.push(f_h.top());
-      f_h.pop();
+    if (empty(left))
+      left.push(num);
+    else {
+      if (num <= left.top()) {
+        left.push(num);
+        if (size(left) - size(right) >= 2) {
+          auto const left_top = left.top();
+          left.pop();
+          right.push(left_top);
+        }
+      } else {
+        right.push(num);
+        if (size(right) > size(left)) {
+          auto const right_top = right.top();
+          right.pop();
+          left.push(right_top);
+        }
+      }
     }
   }
 
   double findMedian() {
-    if (size(f_h) == size(s_h)) {
-      return (f_h.top() + s_h.top()) / 2;
+    if (size(left) != size(right)) {
+      return left.top();
     } else {
-      return f_h.top();
+      return (left.top() + right.top()) / 2.0;
     }
   }
 };

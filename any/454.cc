@@ -12,19 +12,19 @@ using namespace std;
 
 class Solution {
 public:
-    int fourSumCount(vector<int>& a, vector<int>& b, vector<int>& c, vector<int>& d) {
-      unordered_map<int, int> mp;
-      for(int i = 0; i < size(c); i++){
-        for(int j = 0; j < size(d); j++){
-          mp[c[i] + d[j]]++;
-        }
-      }
-      int cnt = 0;
-      for(int i = 0; i < size(a); i++){
-        for(int j = 0; j < size(b); j++){
-          cnt += mp[-(a[i] + b[j])];
-        }
-      }
-      return cnt;
+  int fourSumCount(vector<int> &nums1,
+    vector<int> &nums2,
+    vector<int> &nums3,
+    vector<int> &nums4) {
+    int const n = size(nums1);
+    unordered_map<int, int> mp;
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) { mp[nums1[i] + nums2[j]]++; }
     }
+    int cnt = 0;
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) { cnt += mp[-(nums3[i] + nums4[j])]; }
+    }
+    return cnt;
+  }
 };

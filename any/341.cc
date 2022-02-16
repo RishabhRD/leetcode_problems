@@ -29,31 +29,41 @@ public:
 
 
 class NestedIterator {
-  stack<NestedInteger> st;
+  stack<pair<int, vector<NestedInteger> const *>> st;
+
+  vector<NestedInteger> const *list;
+  int idx;
 
 public:
-  NestedIterator(vector<NestedInteger> &nestedList) {
-    fill_stack(nestedList);
-  }
+  NestedIterator(vector<NestedInteger> &nestedList)
+    : list(&nestedList), idx(0) {}
 
   int next() {
-    auto top = st.top().getInteger();
-    st.pop();
-    return top;
+    auto val = list->at(idx).getInteger();
+    idx++;
+    return val;
   }
 
   bool hasNext() {
-    while(not empty(st) and !st.top().isInteger()){
-      auto top = st.top().getList();
+    if (idx < list->size()) {
+      auto &val = list->at(idx);
+      if (val.isInteger()) {
+        return true;
+      } else {
+        idx++;
+        st.emplace(idx, list);
+        idx = 0;
+        list = &val.getList();
+        return hasNext();
+      }
+    } else if (not empty(st)) {
+      auto [old_idx, old_list] = st.top();
       st.pop();
-      fill_stack(top);
-    }
-    return not empty(st);
-  }
-
-  void fill_stack(vector<NestedInteger>& list){
-    for(int i = size(list) - 1; i >= 0; i--){
-      st.push(list[i]);
+      idx = old_idx;
+      list = old_list;
+      return hasNext();
+    } else {
+      return false;
     }
   }
 };

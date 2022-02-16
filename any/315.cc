@@ -10,51 +10,41 @@
 
 using namespace std;
 
-struct element {
-  int ele;
-  int idx;
-};
+using Iter = vector<pair<int, int>>::iterator;
 
-void count_invert(vector<element> &nums,
-  vector<int> &result,
-  int low,
-  int high) {
-  if (low == high) return;
-  int mid = (low + high) / 2;
-  count_invert(nums, result, low, mid);
-  count_invert(nums, result, mid + 1, high);
-  vector<element> first(begin(nums) + low, begin(nums) + mid + 1);
-  vector<element> second(begin(nums) + mid + 1, begin(nums) + high + 1);
-  int first_idx = 0;
-  int second_idx = 0;
-  int fill_idx = low;
-  int num_inverted = 0;
-  while (first_idx < size(first) and second_idx < size(second)) {
-    if (first[first_idx].ele > second[second_idx].ele) {
-      num_inverted++;
-      nums[fill_idx++] = second[second_idx++];
-    } else {
-      result[first[first_idx].idx] += num_inverted;
-      nums[fill_idx++] = first[first_idx++];
-    }
+auto get_mid(Iter low, Iter high) {
+  int const n = distance(low, high);
+  auto mid = low;
+  advance(mid, n / 2);
+  return mid;
+}
+
+void sort_count(Iter low, Iter high, vector<int> &count) {
+  if (distance(low, high) <= 1) return;
+  Iter mid = get_mid(low, high);
+
+  auto left = low;
+  auto right = mid;
+
+  sort_count(low, mid, count);
+  sort_count(mid, high, count);
+
+  for (auto i = left, j = mid; i < mid; i++) {
+    while (j < high && i->first > j->first) { ++j; }
+    count[i->second] += distance(mid, j);
   }
-  while (first_idx < size(first)) {
-    result[first[first_idx].idx] += num_inverted;
-    nums[fill_idx++] = first[first_idx++];
-  }
-  while (second_idx < size(second)) {
-    num_inverted++;
-    nums[fill_idx++] = second[second_idx++];
-  }
+
+  inplace_merge(low, mid, high);
 }
 
 class Solution {
 public:
   vector<int> countSmaller(vector<int> &nums) {
-    vector<element> vec;
-    for (int i = 0; i < size(nums); i++) { vec.push_back({ nums[i], i }); }
-    vector<int> result(size(nums));
-    count_invert(vec, result, 0, size(nums) - 1);
-    return result;
+    int const n = size(nums);
+    vector count(n, 0);
+    vector<pair<int, int>> zipped_vec;
+    for (int i = 0; i < n; i++) zipped_vec.emplace_back(nums[i], i);
+    sort_count(begin(zipped_vec), end(zipped_vec), count);
+    return count;
   }
 };

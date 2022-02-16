@@ -12,17 +12,15 @@ using namespace std;
 
 class Solution {
 public:
-    int lengthOfLIS(vector<int>& nums) {
-      vector<int> dp;
-      for(auto n : nums){
-        if(size(dp) == 0){
-          dp.push_back(n);
-        }else if(n > dp.back()){
-          dp.push_back(n);
-        }else{
-          *lower_bound(begin(dp), end(dp), n) = n;
-        }
-      }
-      return size(dp);
+  int lengthOfLIS(vector<int> const &nums) {
+    vector<int> dp;
+    for (int const num : nums) {
+      auto itr = lower_bound(begin(dp), end(dp), num);
+      if (itr == end(dp))
+        dp.push_back(num);
+      else
+        *itr = num;
     }
+    return size(dp);
+  }
 };

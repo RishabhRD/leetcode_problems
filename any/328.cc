@@ -21,16 +21,25 @@ struct ListNode {
 class Solution {
 public:
   ListNode *oddEvenList(ListNode *head) {
-    if (head) {
-      auto odd = head, even = head->next, even_head = even;
-      while (even and even->next) {
-        odd->next = odd->next->next;
-        even->next = even->next->next;
+    auto even_head = new ListNode;
+    auto odd_head = new ListNode;
+    auto even = even_head;
+    auto odd = odd_head;
+    bool odd_turn = true;
+    while (head) {
+      auto next_node = head->next;
+      if (odd_turn) {
+        odd->next = head;
         odd = odd->next;
+      } else {
+        even->next = head;
         even = even->next;
       }
-      odd->next = even_head;
+      odd_turn = !odd_turn;
+      head = next_node;
     }
-    return head;
+    odd->next = even_head->next;
+    even->next = nullptr;
+    return odd_head->next;
   }
 };

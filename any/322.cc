@@ -13,15 +13,15 @@ using namespace std;
 class Solution {
 public:
   int coinChange(vector<int> &coins, int amount) {
-    const int n = size(coins);
+    int const n = size(coins);
     vector dp(amount + 1, amount + 1);
     dp[0] = 0;
-    for(int coin : coins){
-      for(int j = 1; j <= amount; j++){
-        if(j - coin >= 0)
-          dp[j] = min(dp[j], 1 + dp[j - coin]);
+    for (int coin : coins) {
+      for (int j = 1; j <= amount; j++) {
+        if (j - coin >= 0) { dp[j] = min(dp[j], dp[j - coin] + 1); }
       }
     }
-    return dp[amount] == amount + 1 ? -1 : dp[amount];
+    if (dp[amount] > amount) return -1;
+    return dp[amount];
   }
 };

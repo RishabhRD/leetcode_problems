@@ -12,32 +12,29 @@
 using namespace std;
 
 class RandomizedSet {
+  unordered_map<int, int> mp;
+  vector<int> ele;
+
 public:
   RandomizedSet() {}
 
   bool insert(int val) {
-    if(mp.find(val) != mp.end()){
-      return false;
-    }
-    mp[val] = size(arr);
-    arr.push_back(val);
+    if (mp.find(val) != mp.end()) return false;
+    mp[val] = size(ele);
+    ele.push_back(val);
     return true;
   }
 
   bool remove(int val) {
-    if(mp.find(val) == mp.end()) return false;
-    int last = arr.back();
-    mp[last] = mp[val];
-    arr[mp[val]] = last;
-    arr.pop_back();
+    if (mp.find(val) == mp.end()) return false;
+    auto const last_ele = ele[size(ele) - 1];
+    auto const idx = mp[val];
+    swap(ele[idx], ele[size(ele) - 1]);
+    ele.pop_back();
+    mp[last_ele] = idx;
     mp.erase(val);
     return true;
   }
 
-  int getRandom() {
-    return arr[rand() % size(arr)];
-  }
-private:
-  vector<int> arr;
-  unordered_map<int, int> mp;
+  int getRandom() { return ele[rand() % size(ele)]; }
 };

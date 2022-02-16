@@ -10,37 +10,18 @@
 
 using namespace std;
 
-int longest_substring(string_view s, int k){
-  int num[128]{0};
-  for(auto c : s){
-    num[c]++;
-  }
-  bool flag = true;
-  for(auto c : s){
-    if(num[c] < k) {
-      flag = false;
-      break;
-    }
-  }
-  if(flag){
-    return size(s);
-  }
-  int start = 0;
-  int result = 0;
-  int cur = 0;
-  for(cur = 0; cur < size(s); cur++){
-    if(num[s[cur]] < k){
-      result = max(result, longest_substring(s.substr(start, cur - start), k));
-      start = cur + 1;
-    }
-  }
-  result = max(result, longest_substring(s.substr(start), k));
-  return result;
+int longest_substring(string_view const s, int k) {
+  array<int, 128> arr{ 0 };
+  for (auto c : s) arr[c]++;
+  int idx = 0;
+  while (idx < size(s) and arr[s[idx]] >= k) idx++;
+  if (idx == size(s)) return size(s);
+  int const left = longest_substring(s.substr(0, idx), k);
+  int const right = longest_substring(s.substr(idx + 1), k);
+  return max(left, right);
 }
 
 class Solution {
 public:
-    int longestSubstring(string s, int k) {
-      return longest_substring(s, k);
-    }
+  int longestSubstring(string s, int k) { return longest_substring(s, k); }
 };

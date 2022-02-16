@@ -17,14 +17,11 @@ class Solution {
 public:
   Solution(vector<int> &nums) : orig(nums) {}
 
-  vector<int> reset() {
-    return orig;
-  }
+  vector<int> reset() { return orig; }
 
   vector<int> shuffle() {
-    vector<int> new_vec(orig);
-    unsigned seed = 0;
-    std::shuffle(begin(new_vec), end(new_vec), default_random_engine(seed));
-    return new_vec;
+    auto shuffled{ orig };
+    random_shuffle(begin(shuffled), end(shuffled));
+    return shuffled;
   }
 };
