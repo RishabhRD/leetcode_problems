@@ -19,12 +19,14 @@ using namespace std;
 
 class Solution {
 public:
-  vector<int> targetIndices(vector<int> const &nums, int target) {
-    auto start = count_if(
-      cbegin(nums), cend(nums), [target](auto num) { return num < target; });
-    auto cnt = count(cbegin(nums), cend(nums), target);
-    vector<int> res(cnt);
-    iota(begin(res), end(res), start);
-    return res;
+  int mostWordsFound(vector<string> &sentences) {
+    return transform_reduce(
+      cbegin(sentences),
+      cend(sentences),
+      0,
+      [](auto a, auto b) { return std::max(a, b); },
+      [](string_view str) -> int {
+        return 1 + count(begin(str), end(str), ' ');
+      });
   }
 };

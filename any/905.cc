@@ -19,12 +19,8 @@ using namespace std;
 
 class Solution {
 public:
-  vector<int> targetIndices(vector<int> const &nums, int target) {
-    auto start = count_if(
-      cbegin(nums), cend(nums), [target](auto num) { return num < target; });
-    auto cnt = count(cbegin(nums), cend(nums), target);
-    vector<int> res(cnt);
-    iota(begin(res), end(res), start);
-    return res;
+  vector<int> sortArrayByParity(vector<int> &nums) {
+    partition(begin(nums), end(nums), [](auto num) { return num % 2 == 0; });
+    return nums;
   }
 };
