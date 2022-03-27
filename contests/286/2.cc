@@ -19,12 +19,16 @@ using namespace std;
 class Solution {
  public:
   int minDeletion(vector<int>& nums) {
-    vector<int> res;
-    for (auto num : nums) {
-      if (size(res) % 2 == 0 or num != res.back()) {
-        res.push_back(num);
+    bool even = true;
+    int last = 0;
+    auto const num = count_if(begin(nums), end(nums), [&](auto ele) {
+      if (even or last != ele) {
+        even = !even;
+        last = ele;
+        return true;
       }
-    }
-    return size(nums) - size(res) + size(res) % 2;
+      return false;
+    });
+    return size(nums) - num + num % 2;
   }
 };

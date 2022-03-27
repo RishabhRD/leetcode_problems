@@ -19,16 +19,12 @@ using namespace std;
 class Solution {
  public:
   vector<vector<int>> findDifference(vector<int>& nums1, vector<int>& nums2) {
-    unordered_set<int> s1{begin(nums1), end(nums1)};
-    unordered_set<int> s2{begin(nums2), end(nums2)};
+    set<int> s1{begin(nums1), end(nums1)};
+    set<int> s2{begin(nums2), end(nums2)};
     vector<int> res1;
-    for (auto e : s1) {
-      if (s2.find(e) == s2.end()) res1.push_back(e);
-    }
+    set_difference(begin(s1), end(s1), begin(s2), end(s2), back_inserter(res1));
     vector<int> res2;
-    for (auto e : s2) {
-      if (s1.find(e) == s1.end()) res2.push_back(e);
-    }
+    set_difference(begin(s2), end(s2), begin(s1), end(s1), back_inserter(res2));
     return {std::move(res1), std::move(res2)};
   }
 };
