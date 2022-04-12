@@ -1,25 +1,23 @@
-#include <unordered_map>
-#include <unordered_set>
-#include <map>
-#include <set>
-#include <queue>
-#include <deque>
-#include <stack>
-#include <cmath>
-#include <iostream>
-#include <limits>
 #include <algorithm>
+#include <array>
+#include <cmath>
+#include <deque>
+#include <iostream>
 #include <iterator>
 #include <limits>
+#include <map>
 #include <numeric>
+#include <queue>
+#include <set>
+#include <stack>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include <array>
 
 using namespace std;
 
-
 class Solution {
-public:
+ public:
   int findDuplicate(vector<int> &nums) {
     int slow = nums[0];
     int fast = nums[nums[0]];
@@ -27,8 +25,7 @@ public:
       slow = nums[slow];
       fast = nums[nums[fast]];
     }
-
-    fast = 0;
+    fast = nums[0];
     while (slow != fast) {
       slow = nums[slow];
       fast = nums[fast];
