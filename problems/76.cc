@@ -1,60 +1,56 @@
+#include <algorithm>
+#include <array>
 #include <cmath>
 #include <iostream>
-#include <limits>
-#include <algorithm>
 #include <iterator>
 #include <limits>
 #include <numeric>
 #include <vector>
-#include <array>
 
 using namespace std;
 
+bool satisfies(array<int, 128> const& source, array<int, 128> const& target) {
+  for (char c = 'a'; c <= 'z'; ++c) {
+    if (source[c] < target[c]) return false;
+  }
+  for (char c = 'A'; c <= 'Z'; ++c) {
+    if (source[c] < target[c]) return false;
+  }
+  return true;
+}
+
+auto get_char_count(string_view s) {
+  array<int, 128> cnt{0};
+  for (auto c : s) {
+    ++cnt[c];
+  }
+  return cnt;
+}
+
 class Solution {
-public:
-  string minWindow(string str, string t) {
-    string_view s{ str };
-    int const m = size(t);
+ public:
+  string minWindow(string s_str, string t_str) {
+    string_view s = s_str;
+    string_view t = t_str;
     int const n = size(s);
-    auto const mp = [&t] {
-      array<int, 128> mp{ 0 };
-      for (auto c : t) mp[c]++;
-      return mp;
-    }();
-    array<int, 128> window{ 0 };
-    int slow = 0;
-    int total_ele = 0;
-    int min_len = INT32_MAX;
-    string_view res;
-    int cnt = 0;
-    for (int fast = 0; fast < n; fast++) {
-      auto const c = s[fast];
-      if (mp[c]) {
-        window[c]++;
-        if (window[c] <= mp[c]) { cnt++; }
-      }
-      if (cnt >= m) {
-        while (true) {
-          auto const slow_c = s[slow];
-          if (!mp[slow_c])
-            slow++;
-          else if (mp[slow_c] < window[slow_c]) {
-            slow++;
-            window[slow_c]--;
-          } else
-            break;
+    auto const t_cnt = get_char_count(t);
+    array<int, 128> s_cnt{0};
+    int i = 0;
+    int j = 0;
+    string_view res{s_str};
+    bool found = false;
+    while (j < n) {
+      ++s_cnt[s[j]];
+      while (satisfies(s_cnt, t_cnt)) {
+        found = true;
+        if (j - i + 1 < size(res)) {
+          res = s.substr(i, j - i + 1);
         }
-        if (min_len > (fast - slow + 1)) {
-          min_len = fast - slow + 1;
-          res = s.substr(slow, min_len);
-        }
+        --s_cnt[s[i]];
+        ++i;
       }
+      ++j;
     }
-    return string{ res };
+    return found ? string{res} : "";
   }
 };
-
-int main() {
-  Solution sol;
-  cout << sol.minWindow("adobecodebanc", "abc") << endl;
-}
