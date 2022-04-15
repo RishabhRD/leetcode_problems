@@ -1,24 +1,29 @@
+#include <algorithm>
+#include <array>
 #include <cmath>
 #include <iostream>
-#include <limits>
-#include <algorithm>
 #include <iterator>
 #include <limits>
 #include <numeric>
 #include <vector>
-#include <array>
 
 using namespace std;
 
 class Solution {
-public:
+ public:
   int longestOnes(vector<int> &nums, int k) {
-    size_t i = 0;
-    size_t j;
-    for(j = 0; j < size(nums); j++){
-      if(nums[j] == 0) k--;
-      if(k < 0 and nums[i++] == 0) k++;
+    auto const n = size(nums);
+    size_t i{};
+    size_t max_len{};
+    int zero_count = 0;
+    for (size_t j{}; j < n; ++j) {
+      if (nums[j] == 0) ++zero_count;
+      if (zero_count > k) {
+        if (nums[i] == 0) --zero_count;
+        ++i;
+      }
+      max_len = max(max_len, j - i + 1);
     }
-    return j - i;
+    return max_len;
   }
 };

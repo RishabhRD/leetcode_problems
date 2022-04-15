@@ -1,31 +1,29 @@
+#include <algorithm>
+#include <array>
 #include <cmath>
 #include <iostream>
-#include <limits>
-#include <algorithm>
 #include <iterator>
 #include <limits>
 #include <numeric>
 #include <vector>
-#include <array>
 
 using namespace std;
 
 class Solution {
-public:
+ public:
   int numberOfSubstrings(string s) {
-    int num_arr[3]{0};
-    auto num = [&](char c) -> int&{
-      return num_arr[c - 'a'];
-    };
-
-    int res = 0;
-    int low = 0;
-    for(char c : s){
-      num(c)++;
-      while(num('a') and num('b') and num('c')){
-        num(s[low++])--;
+    array<int, 3> cnt{0};
+    auto num = [&cnt](auto c) -> int& { return cnt[c - 'a']; };
+    int const n = size(s);
+    int i{};
+    int res{};
+    for (int j{}; j < n; ++j) {
+      ++num(s[j]);
+      while (num('a') and num('b') and num('c')) {
+        --num(s[i]);
+        ++i;
       }
-      res += low;
+      res += i;
     }
     return res;
   }

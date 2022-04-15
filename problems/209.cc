@@ -9,19 +9,22 @@
 using namespace std;
 
 class Solution {
-public:
-  int minSubArrayLen(int target, vector<int> &nums) {
-    int low = 0, high = 0;
-    const int n = size(nums);
-    int cur_sum = 0;
-    int min_len = size(nums) + 1;
-    while(high < n){
-      cur_sum += nums[high++];
-      while(cur_sum >= target){
-        min_len = min(min_len, high - low);
-        cur_sum -= nums[low++];
+ public:
+  int minSubArrayLen(int target, vector<int> const &nums) {
+    size_t i = 0;
+    auto const n = size(nums);
+    auto sum = 0;
+    auto min_len = n + 1;
+    for (size_t j = 0; j < n; ++j) {
+      sum += nums[j];
+      while (sum >= target) {
+        if (j - i + 1 < min_len) {
+          min_len = j - i + 1;
+        }
+        sum -= nums[i];
+        ++i;
       }
     }
-    return min_len == size(nums) + 1 ? 0 : min_len;
+    return min_len == n + 1 ? 0 : min_len;
   }
 };
