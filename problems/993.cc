@@ -1,13 +1,13 @@
-#include <queue>
+#include <algorithm>
+#include <array>
 #include <cmath>
 #include <iostream>
-#include <limits>
-#include <algorithm>
 #include <iterator>
 #include <limits>
 #include <numeric>
+#include <optional>
+#include <queue>
 #include <vector>
-#include <array>
 
 using namespace std;
 struct TreeNode {
@@ -17,43 +17,39 @@ struct TreeNode {
   TreeNode() : val(0), left(nullptr), right(nullptr) {}
   TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
   TreeNode(int x, TreeNode *left, TreeNode *right)
-    : val(x), left(left), right(right) {}
+      : val(x), left(left), right(right) {}
 };
 
+bool is_ele(TreeNode *root, int ele) {
+  return root != nullptr and root->val == ele;
+}
+
+std::optional<std::pair<int, TreeNode *>> find_depth_and_parent(TreeNode *root,
+                                                                int ele) {
+  if (root == nullptr) return {};
+  auto left = find_depth_and_parent(root->left, ele);
+  auto right = find_depth_and_parent(root->right, ele);
+  if (left.has_value()) {
+    ++left->first;
+    return left;
+  } else if (right.has_value()) {
+    ++right->first;
+    return right;
+  }
+  if (is_ele(root->left, ele) || is_ele(root->right, ele)) {
+    return std::pair{1, root};
+  }
+  return {};
+}
+
 class Solution {
-public:
+ public:
   bool isCousins(TreeNode *root, int x, int y) {
-    if (root->val == x or root->val == y) return false;
-    queue<TreeNode *> q;
-    q.push(root);
-    int level_x = -1;
-    int level_y = -1;
-    TreeNode *parent_x{};
-    TreeNode *parent_y{};
-    int cur_level = -1;
-    while (not empty(q)) {
-      int sz = size(q);
-      cur_level++;
-      while (sz--) {
-        auto parent = q.front();
-        if (parent->val == x) level_x = cur_level;
-        if (parent->val == y) level_y = cur_level;
-        q.pop();
-        auto left = parent->left;
-        auto right = parent->right;
-        if (left) {
-          if (left->val == x) parent_x = parent;
-          if (left->val == y) parent_y = parent;
-          q.push(left);
-        }
-        if (right) {
-          if (right->val == x) parent_x = parent;
-          if (right->val == y) parent_y = parent;
-          q.push(right);
-        }
-      }
+    auto x_val = find_depth_and_parent(root, x);
+    auto y_val = find_depth_and_parent(root, y);
+    if (x_val and y_val) {
+      return x_val->first == y_val->first and x_val->second != y_val->second;
     }
-    if (level_x != level_y) return false;
-    return parent_x != parent_y;
+    return false;
   }
 };

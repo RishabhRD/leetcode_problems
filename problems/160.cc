@@ -1,14 +1,20 @@
-#include <cmath>
-#include <iostream>
-#include <limits>
 #include <algorithm>
+#include <array>
+#include <bitset>
+#include <cmath>
+#include <deque>
+#include <iostream>
 #include <iterator>
 #include <limits>
+#include <map>
 #include <numeric>
+#include <optional>
+#include <queue>
+#include <set>
+#include <stack>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include <array>
-
-using namespace std;
 
 struct ListNode {
   int val;
@@ -16,15 +22,41 @@ struct ListNode {
   ListNode(int x) : val(x), next(NULL) {}
 };
 
+auto lenof(ListNode *head) {
+  int len = 0;
+  while (head) {
+    ++len;
+    head = head->next;
+  }
+  return len;
+}
+
+auto intersect_equal(ListNode *headA, ListNode *headB) -> ListNode * {
+  while (headA and headB) {
+    if (headA == headB) return headA;
+    headA = headA->next;
+    headB = headB->next;
+  }
+  return nullptr;
+}
+
+auto increment(ListNode *lst, int k) {
+  for (int i = 0; i < k; ++i) {
+    lst = lst->next;
+  }
+  return lst;
+}
+
 class Solution {
-public:
-  ListNode *getIntersectionNode(ListNode *head1, ListNode *head2) {
-    auto l1 = head1;
-    auto l2 = head2;
-    while (l1 != l2) {
-      l1 = l1 ? l1->next : head2;
-      l2 = l2 ? l2->next : head1;
+ public:
+  ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+    auto const len_a = lenof(headA);
+    auto const len_b = lenof(headB);
+    if (len_a > len_b) {
+      headA = increment(headA, len_a - len_b);
+    } else {
+      headB = increment(headB, len_b - len_a);
     }
-    return l1;
+    return intersect_equal(headA, headB);
   }
 };
