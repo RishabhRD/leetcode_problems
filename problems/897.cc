@@ -1,14 +1,20 @@
-#include <cmath>
-#include <iostream>
-#include <limits>
 #include <algorithm>
+#include <array>
+#include <bitset>
+#include <cmath>
+#include <deque>
+#include <iostream>
 #include <iterator>
 #include <limits>
+#include <map>
 #include <numeric>
+#include <optional>
+#include <queue>
+#include <set>
+#include <stack>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include <array>
-
-using namespace std;
 
 struct TreeNode {
   int val;
@@ -17,35 +23,33 @@ struct TreeNode {
   TreeNode() : val(0), left(nullptr), right(nullptr) {}
   TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
   TreeNode(int x, TreeNode *left, TreeNode *right)
-    : val(x), left(left), right(right) {}
+      : val(x), left(left), right(right) {}
 };
 
-template<typename Func> void traverse(TreeNode *root, Func &&func) {
-  if (root == nullptr) return;
-  traverse(root->left, func);
-  func(root);
-  traverse(root->right, func);
+struct ret_t {
+  TreeNode *head;
+  TreeNode *tail;
+};
+
+ret_t inorder(TreeNode *root) {
+  if (root->left == nullptr and root->right == nullptr) return {root, root};
+  TreeNode *head = root;
+  TreeNode *tail = root;
+  if (root->left) {
+    auto [left_head, left_tail] = inorder(root->left);
+    left_tail->right = root;
+    root->left = nullptr;
+    head = left_head;
+  }
+  if (root->right) {
+    auto [right_head, right_tail] = inorder(root->right);
+    root->right = right_head;
+    tail = right_tail;
+  }
+  return {head, tail};
 }
 
 class Solution {
-public:
-  TreeNode *increasingBST(TreeNode *root, TreeNode* tail = nullptr) {
-    if(not root) return tail;
-    auto res = increasingBST(root->left, root);
-    root->left = nullptr;
-    root->right = increasingBST(root->right, tail);
-    return res;
-  }
+ public:
+  TreeNode *increasingBST(TreeNode *root) { return inorder(root).head; }
 };
-
-int main(){
-  TreeNode n2 (2);
-  TreeNode n1 (1);
-  TreeNode n4 (4);
-  TreeNode n3 (3);
-  n2.left = &n1;
-  n1.left = &n4;
-  n1.right = &n3;
-  Solution sol;
-  sol.increasingBST(&n2);
-}
