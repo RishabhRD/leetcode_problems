@@ -17,30 +17,35 @@
 #include <vector>
 
 class dsu {
+ private:
+  using ll = long long;
+  std::vector<ll> parent_;
+  std::vector<ll> size_;
+
  public:
-  std::vector<int> parent;
-  std::vector<int> size;
-  dsu(int n) : parent(n), size(n, 1) {
-    std::iota(std::begin(parent), std::end(parent), 0);
+  dsu(ll n) : parent_(n), size_(n, 1) {
+    std::iota(std::begin(parent_), std::end(parent_), 0);
   }
 
-  int find(int n) {
-    if (parent[n] == n) return n;
-    return parent[n] = find(parent[n]);
+  ll find(ll n) {
+    if (parent_[n] == n) return n;
+    return parent_[n] = find(parent_[n]);
   }
 
-  void combine(int x, int y) {
-    int px = find(x);
-    int py = find(y);
+  void combine(ll x, ll y) {
+    auto const px = find(x);
+    auto const py = find(y);
     if (px == py) return;
-    if (size[px] >= size[py]) {
-      size[px] += size[py];
-      parent[py] = px;
+    if (size_[px] >= size_[py]) {
+      size_[px] += size_[py];
+      parent_[py] = px;
     } else {
-      size[py] += size[px];
-      parent[px] = py;
+      size_[py] += size_[px];
+      parent_[px] = py;
     }
   }
+
+  auto size(ll n) { return size_[find(n)]; }
 };
 
 class Solution {
