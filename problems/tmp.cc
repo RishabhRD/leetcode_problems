@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <array>
+#include <bitset>
 #include <cmath>
 #include <deque>
 #include <iostream>
@@ -7,6 +8,7 @@
 #include <limits>
 #include <map>
 #include <numeric>
+#include <optional>
 #include <queue>
 #include <set>
 #include <stack>
@@ -14,34 +16,73 @@
 #include <unordered_set>
 #include <vector>
 
-using namespace std;
+using ll = long long;
 
-auto merge_vectors(std::vector<int> const& a, std::vector<int> const& b) {
-  std::vector<int> res(std::size(a) + std::size(b));
-  std::merge(std::cbegin(a), std::cend(a), std::cbegin(b), std::cend(b),
-             std::begin(res), std::greater{});
-  return res;
-}
+class dsu {
+ private:
+  using ll = long long;
+  std::vector<ll> parent_;
+  std::vector<ll> size_;
 
-auto top_k_ele(std::vector<int> const& nums, int k) {
-  std::vector<int> res;
-  auto const n = std::size(nums);
-  for (int i = 0; i < n; ++i) {
-    while (not std::empty(res) and res.back() < nums[i] and
-           (std::size(res) - 1 + n - i) >= k) {
-      res.pop_back();
-    }
-    if (res.size() < k) res.push_back(nums[i]);
-  }
-  return res;
-}
-
-class Solution {
  public:
-  std::vector<int> maxNumber(std::vector<int>& nums1, std::vector<int>& nums2,
-                             int k) {
-    auto const merged_vector = merge_vectors(nums1, nums2);
-    return std::max(top_k_ele(merge_vectors(nums1, nums2), k),
-                    top_k_ele(merge_vectors(nums2, nums1), k));
+  dsu(ll n) : parent_(n), size_(n, 1) {
+    std::iota(std::begin(parent_), std::end(parent_), 0);
   }
+
+  ll find(ll n) {
+    if (parent_[n] == n) return n;
+    return parent_[n] = find(parent_[n]);
+  }
+
+  void combine(ll x, ll y) {
+    auto const px = find(x);
+    auto const py = find(y);
+    if (px == py) return;
+    if (size_[px] >= size_[py]) {
+      size_[px] += size_[py];
+      parent_[py] = px;
+    } else {
+      size_[py] += size_[px];
+      parent_[px] = py;
+    }
+  }
+
+  auto size(ll n) { return size_[find(n)]; }
+};
+
+class dsu {
+ private:
+  using ll = long long;
+  std::vector<ll> parent_;
+  std::vector<ll> size_;
+
+ public:
+  dsu(ll n) {
+    for (int i = 0; i < n; ++i) parent_.push_back(i);
+    for (int i = 0; i < n; ++i) {
+      size_.push_back(1);
+    }
+  }
+
+  // average case: O(1)
+  ll find(ll n) {
+    if (parent_[n] == n) return n;
+    return parent_[n] = find(parent_[n]);
+  }
+
+  // average case: O(1)
+  void combine(ll x, ll y) {
+    auto const px = find(x);
+    auto const py = find(y);
+    if (size_[px] > size_[py]) {
+      parent_[py] = px;
+      size_[px] += size_[py];
+    } else {
+      parent_[px] = py;
+      size_[py] += size_[px];
+    }
+  }
+
+  // average case: O(1)
+  ll size(int n) { return size_[find(n)]; }
 };
