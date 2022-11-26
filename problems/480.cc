@@ -16,27 +16,62 @@
 #include <unordered_set>
 #include <vector>
 
+using ll = long long;
+
 class Solution {
  public:
   std::vector<double> medianSlidingWindow(std::vector<int>& nums, int k) {
-    std::multiset<int> st{std::begin(nums), std::begin(nums) + k};
-    auto mid = std::next(std::begin(st), (k - 1) / 2);
-    std::vector<double> res;
-    for (int high = k;; ++high) {
-      double sum = 0;
-      sum += *mid;
-      if (k % 2 == 0) {
-        sum += *(next(mid));
-        res.push_back(sum / 2);
-      } else {
-        res.push_back(sum);
+    std::multiset<ll> leftS;
+    std::multiset<ll> rightS;
+    auto const enforceConstraint = [&] {
+      if (rightS.size() > leftS.size()) {
+        leftS.insert(*rightS.begin());
+        rightS.erase(rightS.begin());
+      } else if (leftS.size() - rightS.size() > 1) {
+        rightS.insert(*leftS.rbegin());
+        leftS.erase(leftS.find(*leftS.rbegin()));
       }
-      if (high == std::size(nums)) break;
+    };
 
-      st.insert(nums[high]);
-      if (nums[high] < *mid) --mid;
-      if (nums[high - k] <= *mid) ++mid;
-      st.erase(st.find(nums[high - k]));
+    auto const erase = [&](ll i) {
+      if (leftS.find(i) != leftS.end()) {
+        leftS.erase(leftS.find(i));
+      } else {
+        rightS.erase(rightS.find(i));
+      }
+      enforceConstraint();
+    };
+
+    auto const insert = [&](ll i) {
+      if (leftS.empty())
+        leftS.insert(i);
+      else {
+        auto const leftMax = *leftS.rbegin();
+        if (i <= leftMax) {
+          leftS.insert(i);
+        } else {
+          rightS.insert(i);
+        }
+      }
+      enforceConstraint();
+    };
+
+    std::vector<double> res;
+    ll low = 0;
+    auto const n = std::size(nums);
+    for (ll high = 0; high < n; ++high) {
+      insert(nums[high]);
+      while (high - low + 1 > k) {
+        erase(nums[low]);
+        ++low;
+      }
+      if (high - low + 1 == k) {
+        if (leftS.size() == rightS.size()) {
+          res.push_back((*leftS.rbegin() + *rightS.begin()) / 2.0);
+        } else {
+          res.push_back(*leftS.rbegin());
+        }
+      }
     }
     return res;
   }
