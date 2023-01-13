@@ -14,20 +14,38 @@
 #include <unordered_set>
 #include <vector>
 
+using ll = long long;
+
+ll dfs(ll i, ll state, std::vector<int> const& prices,
+       std::vector<std::vector<ll>>& dp) {
+  if (state == 4) return 0;
+  if (i >= prices.size()) {
+    if (state == 0 || state == 2 || state == 4)
+      return 0;
+    else
+      return INT32_MIN;
+  }
+  if (dp[i][state] != -1) return dp[i][state];
+  if (state == 0) {
+    return dp[i][state] = std::max(dfs(i + 1, state, prices, dp),
+                                   -prices[i] + dfs(i + 1, 1, prices, dp));
+  } else if (state == 1) {
+    return dp[i][state] = std::max(dfs(i + 1, state, prices, dp),
+                                   prices[i] + dfs(i + 1, 2, prices, dp));
+  } else if (state == 2) {
+    return dp[i][state] = std::max(dfs(i + 1, state, prices, dp),
+                                   -prices[i] + dfs(i + 1, 3, prices, dp));
+  } else {
+    return dp[i][state] = std::max<ll>(dfs(i + 1, state, prices, dp),
+                                       prices[i] + dfs(i + 1, 4, prices, dp));
+  }
+}
+
 class Solution {
  public:
   int maxProfit(std::vector<int> const& prices) {
-    auto profit2 = INT32_MIN;
-    auto profit1 = INT32_MIN;
-    auto buy1 = INT32_MAX;
-    auto buy2 = INT32_MAX;
-    auto const n = std::size(prices);
-    for (int i = 0; i < n; ++i) {
-      buy1 = std::min(buy1, prices[i]);
-      profit1 = std::max(profit1, prices[i] - buy1);
-      buy2 = std::min(buy2, prices[i] - profit1);
-      profit2 = std::max(profit2, prices[i] - buy2);
-    }
-    return profit2;
+    auto const n = prices.size();
+    std::vector dp(n, std::vector(4, -1ll));
+    return dfs(0, 0, prices, dp);
   }
 };
