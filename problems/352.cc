@@ -89,13 +89,13 @@ segment_tree(std::vector<T> const &, GroupFunc) -> segment_tree<T, GroupFunc>;
 constexpr ll N = 1e4 + 1;
 
 template <typename Predicate>
-ll binary_search(ll low, ll high, Predicate &&predicate) {
+ll bs(ll low, ll high, Predicate &&predicate) {
   if (low >= high) return low;
   auto const mid = low + (high - low) / 2;
   if (predicate(mid)) {
-    return binary_search(mid + 1, high, predicate);
+    return bs(mid + 1, high, predicate);
   } else {
-    return binary_search(low, mid, predicate);
+    return bs(low, mid, predicate);
   }
 }
 
@@ -116,7 +116,7 @@ class SummaryRanges {
     ll cur = 0;
     for (auto itr = st.begin(); itr != st.end(); itr = st.lower_bound(cur)) {
       int const left = *itr;
-      int const next = binary_search(left, 1e4 + 1, [&](auto right) {
+      int const next = bs(left, 1e4 + 1, [&](auto right) {
         return stree.query(left, right) == right - left + 1;
       });
       res.push_back(std::vector<int>({left, next - 1}));

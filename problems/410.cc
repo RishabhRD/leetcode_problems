@@ -19,13 +19,13 @@
 using ll = long long;
 
 template <typename Predicate>
-ll binary_search(ll low, ll high, Predicate&& predicate) {
+ll bs(ll low, ll high, Predicate&& predicate) {
   if (low >= high) return low;
   auto const mid = low + (high - low) / 2;
   if (predicate(mid)) {
-    return binary_search(mid + 1, high, predicate);
+    return bs(mid + 1, high, predicate);
   } else {
-    return binary_search(low, mid, predicate);
+    return bs(low, mid, predicate);
   }
 }
 
@@ -44,7 +44,7 @@ class Solution {
       }
       return cur_k < 0;
     };
-    auto max = binary_search(0, 1e9 + 1, is_possible);
+    auto max = bs(0, 1e9 + 1, is_possible);
     ll cur_sum = 0;
     ll max_sum = cur_sum;
     for (auto n : nums) {
