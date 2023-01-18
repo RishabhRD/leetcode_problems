@@ -1,49 +1,49 @@
 #include <algorithm>
 #include <array>
+#include <bitset>
+#include <cmath>
+#include <deque>
 #include <iostream>
 #include <iterator>
 #include <limits>
+#include <map>
 #include <numeric>
+#include <optional>
+#include <queue>
+#include <set>
+#include <stack>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
-using namespace std;
+using ll = long long;
 
-auto rotation_point(vector<int> const &vec) {
-  int low = 0;
-  int high = size(vec) - 1;
-  while (low < high) {
-    int mid = (low + high) / 2;
-    if (vec[mid] > vec[high])
-      low = mid + 1;
-    else
-      high = mid;
+template <typename Predicate>
+ll binary_search(ll low, ll high, Predicate&& predicate) {
+  if (low >= high) return low;
+  auto const mid = low + (high - low) / 2;
+  if (predicate(mid)) {
+    return binary_search(mid + 1, high, predicate);
+  } else {
+    return binary_search(low, mid, predicate);
   }
-  return low;
 }
 
 class Solution {
-public:
-  int search(vector<int> const &nums, int target) {
-    int const n = size(nums);
-    int const num_rotated = rotation_point(nums);
-    int low = 0;
-    int high = n - 1;
-    while (low <= high) {
-      int const mid = (low + high) / 2;
-      int const real_mid = (mid + num_rotated) % n;
-      if (nums[real_mid] == target)
-        return real_mid;
-      else if (nums[real_mid] > target)
-        high = mid - 1;
-      else
-        low = mid + 1;
-    }
-    return -1;
+ public:
+  int search(std::vector<int>& nums, int target) {
+    auto is_rotation_point = [&](ll i) { return nums[i] > nums.back(); };
+    auto is_less_than_target = [&](ll i) { return nums[i] < target; };
+    auto const rotation_point =
+        binary_search(0, nums.size(), is_rotation_point);
+    auto const left_ans = binary_search(0, rotation_point, is_less_than_target);
+    auto const right_ans =
+        binary_search(rotation_point, nums.size(), is_less_than_target);
+    if (left_ans != rotation_point && nums[left_ans] == target)
+      return left_ans;
+    else if (right_ans != nums.size() && nums[right_ans] == target)
+      return right_ans;
+    else
+      return -1;
   }
 };
-
-int main() {
-  Solution sol;
-  vector<int> arr = { 4, 5, 6, 7, 0, 1, 2 };
-  cout << sol.search(arr, 0) << endl;
-}
