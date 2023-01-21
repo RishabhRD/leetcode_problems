@@ -32,28 +32,20 @@ ll bs(ll low, ll high, Predicate&& predicate) {
 class Solution {
  public:
   int splitArray(std::vector<int>& nums, int k) {
-    auto is_possible = [&](auto max) {
-      ll cur_k = k - 1;
+    auto const max = *std::max_element(std::begin(nums), std::end(nums));
+    auto const sum = std::reduce(std::begin(nums), std::end(nums), 0);
+    auto count = [&](ll s) {
       ll cur_sum = 0;
+      ll count = 0;
       for (auto n : nums) {
         cur_sum += n;
-        if (cur_sum > max) {
-          --cur_k;
+        if (cur_sum > s) {
+          ++count;
           cur_sum = n;
         }
       }
-      return cur_k < 0;
+      return count + 1;
     };
-    auto max = bs(0, 1e9 + 1, is_possible);
-    ll cur_sum = 0;
-    ll max_sum = cur_sum;
-    for (auto n : nums) {
-      cur_sum += n;
-      if (cur_sum > max) {
-        cur_sum = n;
-      }
-      max_sum = std::max(cur_sum, max_sum);
-    }
-    return max_sum;
+    return bs(max, sum + 1, [&](ll s) { return count(s) > k; });
   }
 };
