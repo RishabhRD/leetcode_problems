@@ -1,15 +1,20 @@
 #include <algorithm>
 #include <array>
+#include <bitset>
 #include <cmath>
+#include <deque>
 #include <iostream>
 #include <iterator>
 #include <limits>
+#include <map>
 #include <numeric>
+#include <optional>
+#include <queue>
+#include <set>
+#include <stack>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
-
-// NOTE: There are 2 solutions here
-// 1. Segment tree
-// 2. Merge Sort
 
 using ll = long long;
 
@@ -81,54 +86,48 @@ class segment_tree {
 template <typename T, typename GroupFunc>
 segment_tree(std::vector<T> const &, GroupFunc) -> segment_tree<T, GroupFunc>;
 
-class MySolution {
- public:
-  std::vector<int> countSmaller(std::vector<int> &nums) {
-    for (auto &n : nums) n += 1e4;
-    segment_tree stree{std::vector(1e5 + 1, 0ll), std::plus<>{}};
-    ll const n = nums.size();
-    std::vector<int> ans(n);
-    for (ll i = n - 1; i >= 0; --i) {
-      ans[i] = nums[i] == 0 ? 0 : stree.query(0, nums[i] - 1);
-      stree.update(nums[i], [](auto n) { return n + 1; });
-    }
-    return ans;
+auto calc_left(std::vector<int> const &nums) {
+  ll const n = nums.size();
+  segment_tree stree(std::vector(n, 0), std::plus<>{});
+  std::vector<ll> left(n);
+  for (ll i = 0; i < n; ++i) {
+    auto const num_left = nums[i] == 0 ? 0 : stree.query(0, nums[i] - 1);
+    stree.update(nums[i], [](auto n) { return n + 1; });
+    left[nums[i]] = num_left;
   }
-};
-
-void merge(ll low, ll mid, ll high, std::vector<std::pair<int, int>> &nums,
-           std::vector<int> &count) {
-  ll j = mid + 1;
-  for (ll i = low; i <= mid; ++i) {
-    while (j <= high && nums[j].first < nums[i].first) {
-      ++j;
-    }
-    count[nums[i].second] += j - mid - 1;
-  }
-  std::sort(std::begin(nums) + low, std::begin(nums) + high + 1);
+  return left;
 }
 
-void ms(ll low, ll high, std::vector<std::pair<int, int>> &nums,
-        std::vector<int> &count) {
-  if (low == high) {
-    return;
+auto calc_right(std::vector<int> const &nums) {
+  ll const n = nums.size();
+  segment_tree stree(std::vector(n, 0), std::plus<>{});
+  std::vector<ll> right(n);
+  for (ll i = n - 1; i >= 0; --i) {
+    auto const num_right =
+        nums[i] == n - 1 ? 0 : stree.query(nums[i] + 1, n - 1);
+    stree.update(nums[i], [](auto n) { return n + 1; });
+    right[nums[i]] = num_right;
   }
-  auto const mid = (low + (high - low) / 2);
-  ms(low, mid, nums, count);
-  ms(mid + 1, high, nums, count);
-  merge(low, mid, high, nums, count);
+  return right;
 }
 
 class Solution {
  public:
-  std::vector<int> countSmaller(std::vector<int> &nums) {
-    ll const n = nums.size();
-    std::vector<std::pair<int, int>> zipped;
+  long long goodTriplets(std::vector<int> &nums1, std::vector<int> &nums2) {
+    ll const n = nums1.size();
+    std::vector idx(n, 0);
     for (ll i = 0; i < n; ++i) {
-      zipped.push_back({nums[i], i});
+      idx[nums1[i]] = i;
     }
-    std::vector<int> count(n);
-    ms(0, n - 1, zipped, count);
-    return count;
+    for (auto &n : nums2) {
+      n = idx[n];
+    }
+    auto const left = calc_left(nums2);
+    auto const right = calc_right(nums2);
+    ll sum = 0;
+    for (ll i = 0; i < n; ++i) {
+      sum += left[i] * right[i];
+    }
+    return sum;
   }
 };
