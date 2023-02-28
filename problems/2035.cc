@@ -36,41 +36,42 @@ auto make_sums(std::vector<int> const& nums, ll low, ll high) {
   for (ll i = 0; i < max; ++i) {
     std::bitset<32> bs(i);
     ll sum = 0;
+    ll other_sum = 0;
     for (ll j = 0; j < n; ++j) {
       if (bs[j]) {
         sum += nums[low + j];
+      } else {
+        other_sum += nums[low + j];
       }
     }
-    res[bs.count()].push_back(sum);
+    res[bs.count()].push_back(sum - other_sum);
   }
   return res;
 }
 
 class Solution {
  public:
-  bool splitArraySameAverage(std::vector<int>& nums) {
+  int minimumDifference(std::vector<int>& nums) {
     ll const n = nums.size();
     ll const left_high = n / 2 - 1;
     ll const right_high = n - 1;
     auto left = make_sums(nums, 0, left_high);
     auto right = make_sums(nums, left_high + 1, right_high);
     for (auto& vec : right) std::sort(std::begin(vec), std::end(vec));
-    ll const sum = std::reduce(std::begin(nums), std::end(nums), 0);
-    for (auto& vec : right) std::sort(std::begin(vec), std::end(vec));
+    ll min = INT32_MAX;
     for (ll i = 0; i < left.size(); ++i) {
-      for (ll j = 0; j < right.size(); ++j) {
-        if ((i == 0 && j == 0) ||
-            (i == left.size() - 1 && j == right.size() - 1))
-          continue;
-        for (auto ele : left[i]) {
-          auto const k = binary_search(0, right[j].size(), [&](auto idx) {
-            return (right[j][idx] + ele) * n < sum * (i + j);
-          });
-          if (k != right[j].size() && (right[j][k] + ele) * n == sum * (i + j))
-            return true;
+      auto const j = n / 2 - i;
+      for (auto n : left[i]) {
+        ll const k = binary_search(0, right[j].size(),
+                                   [&](auto i) { return n + right[j][i] < 0; });
+        if (k != right[j].size()) {
+          min = std::min(min, std::abs(n + right[j][k]));
+        }
+        if (k != 0) {
+          min = std::min(min, std::abs(n + right[j][k - 1]));
         }
       }
     }
-    return false;
+    return min;
   }
 };
